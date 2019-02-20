@@ -14,13 +14,13 @@
 <meta property="og:site_name" content="Frank&#39;s Bl0g">
 <meta property="og:description" content="想起之前跟踪Vault 8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。 理论知识 数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/https原理及部署/concept.png">
-<meta property="og:image" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/https原理及部署/result.png">
-<meta property="og:updated_time" content="2019-02-20T06:58:02.742Z">
+<meta property="og:image" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/concept.png">
+<meta property="og:image" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/result.png">
+<meta property="og:updated_time" content="2019-02-20T07:03:47.911Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="https原理及部署">
 <meta name="twitter:description" content="想起之前跟踪Vault 8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。 理论知识 数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否">
-<meta name="twitter:image" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/https原理及部署/concept.png">
+<meta name="twitter:image" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/concept.png">
     
     
         
@@ -160,7 +160,7 @@
 <li>X.509证书是一种通用的证书格式，符合ITU-T X.509国际标准，它主要包含三个文件：key，csr，crt。<br><em>key</em>是服务器上的私钥文件，用于对发送给客户端数据的加密，以及对从客户端接收到数据的解密；<br><em>csr</em>是证书签名请求文件，用于提交给证书颁发机构（CA）对证书签名；<br><em>crt</em>是由证书颁发机构（CA）签名后的证书，或者是开发者自签名的证书，包含证书持有人的信息，持有人的公钥，以及签署者的签名等信息。</li>
 <li>了解linux中Apache服务的相关知识，对其配置文件：/etc/apache2/sites-<br>available/default-ssl.conf有基础的了解；了解linux下提供dns服务器的bind9服务相关配置。</li>
 </ol>
-<h4 id="实验过程"><a href="#实验过程" class="headerlink" title="实验过程"></a>实验过程</h4><p>浏览器／服务器环境<br>服务器配置：apache2+bind9+openssl<br>证书颁发过程如下：<img src="https原理及部署/concept.png" alt="concept"></p>
+<h4 id="实验过程"><a href="#实验过程" class="headerlink" title="实验过程"></a>实验过程</h4><p>浏览器／服务器环境<br>服务器配置：apache2+bind9+openssl<br>证书颁发过程如下：<img src="/2019/02/19/https原理及部署/concept.png" alt="concept"></p>
 <ol>
 <li>开启Apache2的SSL模块，详见/etc/apache2/sites-available/default-ssl.conf：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 开启SSL模块</span><br><span class="line">SSLEngine on</span><br></pre></td></tr></table></figure>
 </li>
@@ -181,7 +181,7 @@
 <p>server.key  私钥<br>server.csr  证书请求文件<br>ca.crt      CA证书<br>server.crt  自颁发的证书<br>最后，将生成的用于加解密的密钥和签署的自颁证书文件导入到Apache服务器配置文件/etc/apache2/sites-available/default-ssl.conf中</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 存放签署过的证书</span><br><span class="line">SSLCertificateFile      /etc/ssl/certs/server.crt</span><br><span class="line"># 存放签署过的私钥</span><br><span class="line">SSLCertificateKeyFile   /etc/ssl/private/server.key</span><br></pre></td></tr></table></figure>
-<h5 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h5><p>在浏览器“受信任的根证书颁发机构”中导入根证书文件ca.crt，实现https安全访问网站。<br><img src="https原理及部署/result.png" alt="result"></p>
+<h5 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h5><p>在浏览器“受信任的根证书颁发机构”中导入根证书文件ca.crt，实现https安全访问网站。<br><img src="/2019/02/19/https原理及部署/result.png" alt="result"></p>
 
   </div>
 </article>
