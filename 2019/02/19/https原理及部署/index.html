@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang=zh>
 <head><meta name="generator" content="Hexo 3.8.0">
     <!-- so meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="想起之前跟踪Vault 8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。理论知识 数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否导">
+    <meta name="description" content="想起之前跟踪Vault 8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。 理论知识 数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否">
 <meta name="keywords" content="S3cur1ty">
 <meta property="og:type" content="article">
 <meta property="og:title" content="https原理及部署">
 <meta property="og:url" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/index.html">
 <meta property="og:site_name" content="Fr4nk404&#39;s Bl0g">
-<meta property="og:description" content="想起之前跟踪Vault 8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。理论知识 数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否导">
-<meta property="og:locale" content="default">
+<meta property="og:description" content="想起之前跟踪Vault 8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。 理论知识 数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/https原理及部署/concept.png">
 <meta property="og:image" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/https原理及部署/result.png">
-<meta property="og:updated_time" content="2019-02-20T06:36:26.633Z">
+<meta property="og:updated_time" content="2019-02-20T06:41:24.982Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="https原理及部署">
-<meta name="twitter:description" content="想起之前跟踪Vault 8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。理论知识 数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否导">
+<meta name="twitter:description" content="想起之前跟踪Vault 8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。 理论知识 数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否">
 <meta name="twitter:image" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/https原理及部署/concept.png">
     
     
@@ -62,13 +62,13 @@
     <span id="nav">
       <ul>
          
-          <li><a href="/">Home</a></li>
+          <li><a href="/">首页</a></li>
          
-          <li><a href="/about/">About</a></li>
+          <li><a href="/about/">关于</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">归档</a></li>
          
-          <li><a href="/projects_url">Projects</a></li>
+          <li><a href="/projects_url">项目</a></li>
         
       </ul>
     </span>
@@ -82,10 +82,10 @@
         <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br>
     <div id="share" style="display: none">
@@ -104,7 +104,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#想起之前跟踪Vault-8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。"><span class="toc-number">1.</span> <span class="toc-text">想起之前跟踪Vault 8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#理论知识"><span class="toc-number">1.1.</span> <span class="toc-text">理论知识</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#实验过程"><span class="toc-number">1.2.</span> <span class="toc-text">实验过程</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#客户端"><span class="toc-number">1.2.1.</span> <span class="toc-text">客户端</span></a></li></ol></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#理论知识"><span class="toc-number">1.</span> <span class="toc-text">理论知识</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#实验过程"><span class="toc-number">2.</span> <span class="toc-text">实验过程</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#客户端"><span class="toc-number">2.1.</span> <span class="toc-text">客户端</span></a></li></ol></li></ol>
     </div>
   </span>
 </div>
@@ -153,7 +153,8 @@
   
 
   <div class="content" itemprop="articleBody">
-    <h3 id="想起之前跟踪Vault-8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。"><a href="#想起之前跟踪Vault-8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。" class="headerlink" title="想起之前跟踪Vault 8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。"></a>想起之前跟踪Vault 8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。</h3><h4 id="理论知识"><a href="#理论知识" class="headerlink" title="理论知识"></a>理论知识</h4><ol>
+    <p><strong>想起之前跟踪Vault 8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。</strong></p>
+<h4 id="理论知识"><a href="#理论知识" class="headerlink" title="理论知识"></a>理论知识</h4><ol>
 <li>数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否导入了证书颁发者的根证书。</li>
 <li>以下证书生成过程基于openssl，它是一个安全套接字层密码库，囊括主要的密码算法、常用的密钥和证书封装管理功能及SSL协议，并提供丰富的应用程序供测试或其它目的使用。我们应用它构造密钥并进行X.509证书伪造。</li>
 <li>X.509证书是一种通用的证书格式，符合ITU-T X.509国际标准，它主要包含三个文件：key，csr，crt。<br><em>key</em>是服务器上的私钥文件，用于对发送给客户端数据的加密，以及对从客户端接收到数据的解密；<br><em>csr</em>是证书签名请求文件，用于提交给证书颁发机构（CA）对证书签名；<br><em>crt</em>是由证书颁发机构（CA）签名后的证书，或者是开发者自签名的证书，包含证书持有人的信息，持有人的公钥，以及签署者的签名等信息。</li>
@@ -193,19 +194,19 @@
     <div id="nav-footer" style="display: none">
       <ul>
          
-          <li><a href="/">Home</a></li>
+          <li><a href="/">首页</a></li>
          
-          <li><a href="/about/">About</a></li>
+          <li><a href="/about/">关于</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">归档</a></li>
          
-          <li><a href="/projects_url">Projects</a></li>
+          <li><a href="/projects_url">项目</a></li>
         
       </ul>
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#想起之前跟踪Vault-8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。"><span class="toc-number">1.</span> <span class="toc-text">想起之前跟踪Vault 8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#理论知识"><span class="toc-number">1.1.</span> <span class="toc-text">理论知识</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#实验过程"><span class="toc-number">1.2.</span> <span class="toc-text">实验过程</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#客户端"><span class="toc-number">1.2.1.</span> <span class="toc-text">客户端</span></a></li></ol></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#理论知识"><span class="toc-number">1.</span> <span class="toc-text">理论知识</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#实验过程"><span class="toc-number">2.</span> <span class="toc-text">实验过程</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#客户端"><span class="toc-number">2.1.</span> <span class="toc-text">客户端</span></a></li></ol></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
@@ -225,10 +226,10 @@
     </div>
 
     <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
-        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 
   </div>
@@ -243,13 +244,13 @@
     <nav>
       <ul>
          
-          <li><a href="/">Home</a></li>
+          <li><a href="/">首页</a></li>
          
-          <li><a href="/about/">About</a></li>
+          <li><a href="/about/">关于</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">归档</a></li>
          
-          <li><a href="/projects_url">Projects</a></li>
+          <li><a href="/projects_url">项目</a></li>
         
       </ul>
     </nav>
