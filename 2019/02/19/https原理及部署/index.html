@@ -6,20 +6,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="想起之前跟踪Vault 8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。 理论知识 数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否">
+    <meta name="description" content="想起之前跟踪Vault 8蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。 理论知识 数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否导">
 <meta name="keywords" content="S3cur1ty">
 <meta property="og:type" content="article">
-<meta property="og:title" content="https原理及部署">
+<meta property="og:title" content="部署https">
 <meta property="og:url" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/index.html">
 <meta property="og:site_name" content="Frank&#39;s Bl0g">
-<meta property="og:description" content="想起之前跟踪Vault 8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。 理论知识 数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否">
+<meta property="og:description" content="想起之前跟踪Vault 8蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。 理论知识 数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否导">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/concept.png">
 <meta property="og:image" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/result.png">
-<meta property="og:updated_time" content="2019-02-20T07:03:47.911Z">
+<meta property="og:updated_time" content="2019-02-20T07:17:14.559Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="https原理及部署">
-<meta name="twitter:description" content="想起之前跟踪Vault 8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。 理论知识 数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否">
+<meta name="twitter:title" content="部署https">
+<meta name="twitter:description" content="想起之前跟踪Vault 8蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。 理论知识 数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否导">
 <meta name="twitter:image" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/concept.png">
     
     
@@ -40,7 +40,7 @@
         
     
     <!-- title -->
-    <title>https原理及部署</title>
+    <title>部署https</title>
     <!-- styles -->
     <link rel="stylesheet" href="/css/style.css">
     <!-- persian styles -->
@@ -91,15 +91,15 @@
     <div id="share" style="display: none">
       <ul>
   <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://fr4nk404.github.io/2019/02/19/https原理及部署/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&text=https原理及部署"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=https原理及部署"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&is_video=false&description=https原理及部署"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=https原理及部署&body=Check out this article: https://fr4nk404.github.io/2019/02/19/https原理及部署/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=https原理及部署"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=https原理及部署"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=https原理及部署"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=https原理及部署"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&name=https原理及部署&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&text=部署https"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&is_video=false&description=部署https"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=部署https&body=Check out this article: https://fr4nk404.github.io/2019/02/19/https原理及部署/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&name=部署https&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -116,7 +116,7 @@
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
-        https原理及部署
+        部署https
     </h1>
 
 
@@ -153,7 +153,7 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p><strong>想起之前跟踪Vault 8的蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。</strong></p>
+    <p><strong>想起之前跟踪Vault 8蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。</strong></p>
 <h4 id="理论知识"><a href="#理论知识" class="headerlink" title="理论知识"></a>理论知识</h4><ol>
 <li>数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否导入了证书颁发者的根证书。</li>
 <li>以下证书生成过程基于openssl，它是一个安全套接字层密码库，囊括主要的密码算法、常用的密钥和证书封装管理功能及SSL协议，并提供丰富的应用程序供测试或其它目的使用。我们应用它构造密钥并进行X.509证书伪造。</li>
@@ -213,15 +213,15 @@
     <div id="share-footer" style="display: none">
       <ul>
   <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://fr4nk404.github.io/2019/02/19/https原理及部署/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&text=https原理及部署"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=https原理及部署"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&is_video=false&description=https原理及部署"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=https原理及部署&body=Check out this article: https://fr4nk404.github.io/2019/02/19/https原理及部署/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=https原理及部署"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=https原理及部署"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=https原理及部署"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=https原理及部署"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&name=https原理及部署&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&text=部署https"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&is_video=false&description=部署https"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=部署https&body=Check out this article: https://fr4nk404.github.io/2019/02/19/https原理及部署/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&name=部署https&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
