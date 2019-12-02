@@ -1,282 +1,68 @@
-<!DOCTYPE html>
-<html>
-<head><meta name="generator" content="Hexo 3.8.0">
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="想起之前跟踪Vault 8蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。 理论知识 数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否导">
-<meta name="keywords" content="S3cur1ty">
-<meta property="og:type" content="article">
-<meta property="og:title" content="部署https">
-<meta property="og:url" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/index.html">
-<meta property="og:site_name" content="Frank&#39;s Bl0g">
-<meta property="og:description" content="想起之前跟踪Vault 8蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。 理论知识 数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否导">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/concept.png">
-<meta property="og:image" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/result.png">
-<meta property="og:updated_time" content="2019-06-23T07:50:02.454Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="部署https">
-<meta name="twitter:description" content="想起之前跟踪Vault 8蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。 理论知识 数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否导">
-<meta name="twitter:image" content="https://fr4nk404.github.io/2019/02/19/https原理及部署/concept.png">
-    
-    
-        
-          
-              <link rel="shortcut icon" href="/images/favicon.ico">
-          
-        
-        
-          
-            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
-          
-        
-        
-          
-            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-          
-        
-    
-    <!-- title -->
-    <title>部署https</title>
-    <!-- styles -->
-    <link rel="stylesheet" href="/css/style.css">
-    <!-- persian styles -->
-    
-      <link rel="stylesheet" href="/css/rtl.css">
-    
-    <!-- rss -->
-    
-    
-</head>
+extends base
 
-<body class="max-width mx-auto px3 ltr">
-    
-      <div id="header-post">
-  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
-  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
-  <span id="menu">
-    <span id="nav">
-      <ul>
-         
-          <li><a href="/">首页</a></li>
-         
-          <li><a href="/about/">关于</a></li>
-         
-          <li><a href="/archives/">归档</a></li>
-         
-          <li><a href="/projects_url">项目</a></li>
-        
-      </ul>
-    </span>
-    <br>
-    <span id="actions">
-      <ul>
-        
-        <li><a class="icon" href="/2019/04/21/ss-NG-switchyOmega+Outline/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
-        
-        
-        <li><a class="icon" href="/2019/01/21/HHB/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
-        
-        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
-      </ul>
-      <span id="i-prev" class="info" style="display:none;">上一篇</span>
-      <span id="i-next" class="info" style="display:none;">下一篇</span>
-      <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
-    </span>
-    <br>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://fr4nk404.github.io/2019/02/19/https原理及部署/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&text=部署https"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&is_video=false&description=部署https"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=部署https&body=Check out this article: https://fr4nk404.github.io/2019/02/19/https原理及部署/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&name=部署https&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-</ul>
+block title
+  title= page.title + ' | ' + config.title
 
-    </div>
-    <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#理论知识"><span class="toc-number">1.</span> <span class="toc-text">理论知识</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#实验过程"><span class="toc-number">2.</span> <span class="toc-text">实验过程</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#客户端"><span class="toc-number">2.1.</span> <span class="toc-text">客户端</span></a></li></ol></li></ol>
-    </div>
-  </span>
-</div>
+block content
+  .post
+    h1.post-title= page.title
+    .post-meta= page.date.format('ll')
+      if page.categories.length > 0
+        span= ' | '
+        span.category
+          for category in page.categories.toArray()
+            a(href=url_for(category.path))= category.name
+      if theme.busuanzi == true
+        script(src='https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js', async)
+        span#busuanzi_container_page_pv= ' | '
+          span#busuanzi_value_page_pv
+          span= ' ' + __('Hits')
+      if theme.wordcount == true
+        include _partial/wordcount.pug
+    if theme.disqus
+      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
+    if theme.changyan
+      a.ds-thread-count(href=url_for(page.path) + '#SOHUCS')
+        span#changyan_count_unit(style='font-size: 15px; color: #6E7173;') 0
+        span= ' ' + __('Comment')
+      script(src='https://assets.changyan.sohu.com/upload/plugins/plugins.count.js', async)
+    if theme.valine.enable
+      a.disqus-comment-count( href=url_for(page.path) + '#vcomment')
+        span.valine-comment-count(data-xid=url_for(page.path))
+        span= ' ' + __('Comment')
+    if page.toc
+      div(class='clear')
+        div(id='toc' class='toc-article')
+          div(class='toc-title')= __('contents')
+          != toc(page.content, {list_number: theme.toc_number})
+    .post-content
+      != page.content
+    if theme.donate.enable == true
+      iframe(src='/donate/?AliPayQR=' + theme.donate.alipay_qr + '&WeChatQR=' + theme.donate.wechat_qr + '&GitHub=' + theme.donate.github + '&BTCQR=' + theme.donate.btc_qr + '&BTCKEY='+ theme.donate.btc_key + '&PayPal=' + theme.donate.paypal_url, style='overflow-x:hidden; overflow-y:hidden; border:0xp none #fff; min-height:240px; width:100%;', frameborder='0', scrolling='no')
 
-    
-    <div class="content index py4">
-        
-        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
-  <header>
-    
-    <h1 class="posttitle" itemprop="name headline">
-        部署https
-    </h1>
+    if theme.post_copyright.enable == true && page.copyright != false
+      div
+        ul.post-copyright
+          li.post-copyright-author
+            strong= __('copyright_author_prefix')
+            = theme.post_copyright.author
+          li.post-copyright-link
+            strong= __('copyright_link_prefix')
+            a(href='/' + page.path)= page.permalink
+          li.post-copyright-license
+            strong= __('copyright_declare_prefix')
+            if theme.post_copyright.copyright_text
+              != theme.post_copyright.copyright_text
+            else
+              != __('copyright_default_text')
+      br
 
+    if theme.shareto == true
+      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
+      a.article-share-link(data-url=page.permalink, data-id=page._id, data-qrcode=qrcode(page.permalink))= __('shareto')
 
+    include _partial/tag.pug
+    include _partial/post_nav.pug
 
-    <div class="meta">
-      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-        <span itemprop="name">Frank's Bl0g</span>
-      </span>
-      
-    <div class="postdate">
-      
-        <time datetime="2019-02-19T14:30:04.000Z" itemprop="datePublished">2019-02-19</time>
-        
-      
-    </div>
-
-
-      
-    <div class="article-category">
-        <i class="fas fa-archive"></i>
-        <a class="category-link" href="/categories/Security/">Security</a>
-    </div>
-
-
-      
-    <div class="article-tag">
-        <i class="fas fa-tag"></i>
-        <a class="tag-link" href="/tags/S3cur1ty/">S3cur1ty</a>
-    </div>
-
-
-    </div>
-  </header>
-  
-
-  <div class="content" itemprop="articleBody">
-    <p><strong>想起之前跟踪Vault 8蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。</strong></p>
-<h4 id="理论知识"><a href="#理论知识" class="headerlink" title="理论知识"></a>理论知识</h4><ol>
-<li>数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否导入了证书颁发者的根证书。</li>
-<li>以下证书生成过程基于openssl，它是一个安全套接字层密码库，囊括主要的密码算法、常用的密钥和证书封装管理功能及SSL协议，并提供丰富的应用程序供测试或其它目的使用。我们应用它构造密钥并进行X.509证书伪造。</li>
-<li>X.509证书是一种通用的证书格式，符合ITU-T X.509国际标准，它主要包含三个文件：key，csr，crt。<br><em>key</em>是服务器上的私钥文件，用于对发送给客户端数据的加密，以及对从客户端接收到数据的解密；<br><em>csr</em>是证书签名请求文件，用于提交给证书颁发机构（CA）对证书签名；<br><em>crt</em>是由证书颁发机构（CA）签名后的证书，或者是开发者自签名的证书，包含证书持有人的信息，持有人的公钥，以及签署者的签名等信息。</li>
-<li>了解linux中Apache服务的相关知识，对其配置文件：/etc/apache2/sites-<br>available/default-ssl.conf有基础的了解；了解linux下提供dns服务器的bind9服务相关配置。</li>
-</ol>
-<h4 id="实验过程"><a href="#实验过程" class="headerlink" title="实验过程"></a>实验过程</h4><p>浏览器／服务器环境<br>服务器配置：apache2+bind9+openssl<br>证书颁发过程如下：<img src="/2019/02/19/https原理及部署/concept.png" alt="concept"></p>
-<ol>
-<li>开启Apache2的SSL模块，详见/etc/apache2/sites-available/default-ssl.conf：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 开启SSL模块</span><br><span class="line">SSLEngine on</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>这段配置代码的作用是将我们生成的证书导入到网站中从而实现https安全访问。</p>
-<ol start="2">
-<li>首先生成一个私钥，用于对通信过程中数据的加解密；生成私钥后，创建证书签名请求并发送给证书颁发机构；证书颁发机构验证请求者的身份之后，出具签名证书。本实验通过openssl实现证书颁发过程。<ul>
-<li>生成RSA密钥文件KEY。用于对发送给客户端数据的加密，以及对从客户端接收到数据的解密。</li>
-<li>生成证书请求文件CSR，用于提交给证书颁发机构（CA）对证书签名。</li>
-<li>生成CA证书。前面提过X.509证书的认证者总是CA或由CA指定的人，所以得先生成CA的证书。</li>
-<li>生成自颁证书。用上一步生成的CA证书给自己颁发证书<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 生成rsa私钥、2048位强度、密钥文件名server.key</span><br><span class="line">openssl genrsa -out server.key 2048 </span><br><span class="line"># 生成请求文件。依次输入国家，地区，城市，组织，组织单位，Common Name和Email。</span><br><span class="line"># Common Name应该与域名保持一致，否则会引起浏览器警告。</span><br><span class="line">openssl req -new -key server.key -out server.csr  </span><br><span class="line"># 生成CA证书 ca.crt是根证书</span><br><span class="line">openssl req -new -x509 -key server.key -out ca.crt -days 3650</span><br><span class="line"># 自颁证书。server.crt有证书持有人信息，持有人公钥以及签署者的签名等信息</span><br><span class="line">openssl x509 -req -days 3650 -in server.csr \</span><br><span class="line">-CA ca.crt -CAkey server.key \</span><br><span class="line">-CAcreateserial -out server.crt</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-</li>
-</ol>
-<p>至此，证书生成过程完成。分别生成如下文件</p>
-<blockquote>
-<p>server.key  私钥<br>server.csr  证书请求文件<br>ca.crt      CA证书<br>server.crt  自颁发的证书<br>最后，将生成的用于加解密的密钥和签署的自颁证书文件导入到Apache服务器配置文件/etc/apache2/sites-available/default-ssl.conf中</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 存放签署过的证书</span><br><span class="line">SSLCertificateFile      /etc/ssl/certs/server.crt</span><br><span class="line"># 存放签署过的私钥</span><br><span class="line">SSLCertificateKeyFile   /etc/ssl/private/server.key</span><br></pre></td></tr></table></figure>
-<h5 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h5><p>在浏览器“受信任的根证书颁发机构”中导入根证书文件ca.crt，实现https安全访问网站。<br><img src="/2019/02/19/https原理及部署/result.png" alt="result"></p>
-
-  </div>
-</article>
-
-
-
-        
-          <div id="footer-post-container">
-  <div id="footer-post">
-
-    <div id="nav-footer" style="display: none">
-      <ul>
-         
-          <li><a href="/">首页</a></li>
-         
-          <li><a href="/about/">关于</a></li>
-         
-          <li><a href="/archives/">归档</a></li>
-         
-          <li><a href="/projects_url">项目</a></li>
-        
-      </ul>
-    </div>
-
-    <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#理论知识"><span class="toc-number">1.</span> <span class="toc-text">理论知识</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#实验过程"><span class="toc-number">2.</span> <span class="toc-text">实验过程</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#客户端"><span class="toc-number">2.1.</span> <span class="toc-text">客户端</span></a></li></ol></li></ol>
-    </div>
-
-    <div id="share-footer" style="display: none">
-      <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://fr4nk404.github.io/2019/02/19/https原理及部署/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&text=部署https"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&is_video=false&description=部署https"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=部署https&body=Check out this article: https://fr4nk404.github.io/2019/02/19/https原理及部署/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&title=部署https"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://fr4nk404.github.io/2019/02/19/https原理及部署/&name=部署https&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-
-    <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
-        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
-    </div>
-
-  </div>
-</div>
-
-        
-        <footer id="footer">
-  <div class="footer-left">
-    Copyright &copy; 2019 Frank
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-         
-          <li><a href="/">首页</a></li>
-         
-          <li><a href="/about/">关于</a></li>
-         
-          <li><a href="/archives/">归档</a></li>
-         
-          <li><a href="/projects_url">项目</a></li>
-        
-      </ul>
-    </nav>
-  </div>
-</footer>
-
-    </div>
-    <!-- styles -->
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
-
-    <!-- jquery -->
-<script src="/lib/jquery/jquery.min.js"></script>
-<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
-<script src="/js/main.js"></script>
-<!-- search -->
-
-<!-- Google Analytics -->
-
-<!-- Baidu Analytics -->
-
-<!-- Disqus Comments -->
-
-
-</body>
-</html>
+    if page.comments
+      include _partial/comments.pug

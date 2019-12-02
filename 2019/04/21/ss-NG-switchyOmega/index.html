@@ -1,266 +1,68 @@
-<!DOCTYPE html>
-<html>
-<head><meta name="generator" content="Hexo 3.8.0">
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="前段时间自己的小飞机被封了，重新折腾了一遍，用了 Shadowsocks-NG + SwitchyOmega 。发现之前配的竟然忘记了。。。有的时候记性真得不好使了，这里简单写一下，方便以后环境的重新配置。 服务器怎么配ss，详见Google Cloud Platform安装SSR，不再赘述。被封了，重新申请个IP再试试:) 配好之后，同步下小飞机的配置。这时就可以使用小飞机+Chrome’Swi">
-<meta name="keywords" content="DUse">
-<meta property="og:type" content="article">
-<meta property="og:title" content="ss-NG+switchyOmega+Outline">
-<meta property="og:url" content="https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/index.html">
-<meta property="og:site_name" content="Frank&#39;s Bl0g">
-<meta property="og:description" content="前段时间自己的小飞机被封了，重新折腾了一遍，用了 Shadowsocks-NG + SwitchyOmega 。发现之前配的竟然忘记了。。。有的时候记性真得不好使了，这里简单写一下，方便以后环境的重新配置。 服务器怎么配ss，详见Google Cloud Platform安装SSR，不再赘述。被封了，重新申请个IP再试试:) 配好之后，同步下小飞机的配置。这时就可以使用小飞机+Chrome’Swi">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/1.jpg">
-<meta property="og:image" content="https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/2.jpg">
-<meta property="og:image" content="https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/3.jpg">
-<meta property="og:updated_time" content="2019-11-11T09:30:10.032Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ss-NG+switchyOmega+Outline">
-<meta name="twitter:description" content="前段时间自己的小飞机被封了，重新折腾了一遍，用了 Shadowsocks-NG + SwitchyOmega 。发现之前配的竟然忘记了。。。有的时候记性真得不好使了，这里简单写一下，方便以后环境的重新配置。 服务器怎么配ss，详见Google Cloud Platform安装SSR，不再赘述。被封了，重新申请个IP再试试:) 配好之后，同步下小飞机的配置。这时就可以使用小飞机+Chrome’Swi">
-<meta name="twitter:image" content="https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/1.jpg">
-    
-    
-        
-          
-              <link rel="shortcut icon" href="/images/favicon.ico">
-          
-        
-        
-          
-            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
-          
-        
-        
-          
-            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-          
-        
-    
-    <!-- title -->
-    <title>ss-NG+switchyOmega+Outline</title>
-    <!-- styles -->
-    <link rel="stylesheet" href="/css/style.css">
-    <!-- persian styles -->
-    
-      <link rel="stylesheet" href="/css/rtl.css">
-    
-    <!-- rss -->
-    
-    
-</head>
+extends base
 
-<body class="max-width mx-auto px3 ltr">
-    
-      <div id="header-post">
-  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
-  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
-  <span id="menu">
-    <span id="nav">
-      <ul>
-         
-          <li><a href="/">首页</a></li>
-         
-          <li><a href="/about/">关于</a></li>
-         
-          <li><a href="/archives/">归档</a></li>
-         
-          <li><a href="/projects_url">项目</a></li>
-        
-      </ul>
-    </span>
-    <br>
-    <span id="actions">
-      <ul>
-        
-        <li><a class="icon" href="/2019/05/20/CVE-2019-12136/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
-        
-        
-        <li><a class="icon" href="/2019/02/19/https原理及部署/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
-        
-        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
-      </ul>
-      <span id="i-prev" class="info" style="display:none;">上一篇</span>
-      <span id="i-next" class="info" style="display:none;">下一篇</span>
-      <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
-    </span>
-    <br>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/&text=ss-NG+switchyOmega+Outline"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/&title=ss-NG+switchyOmega+Outline"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/&is_video=false&description=ss-NG+switchyOmega+Outline"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ss-NG+switchyOmega+Outline&body=Check out this article: https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/&title=ss-NG+switchyOmega+Outline"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/&title=ss-NG+switchyOmega+Outline"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/&title=ss-NG+switchyOmega+Outline"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/&title=ss-NG+switchyOmega+Outline"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/&name=ss-NG+switchyOmega+Outline&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-</ul>
+block title
+  title= page.title + ' | ' + config.title
 
-    </div>
-    <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#掺杂点儿"><span class="toc-number">1.</span> <span class="toc-text">掺杂点儿</span></a></li></ol>
-    </div>
-  </span>
-</div>
+block content
+  .post
+    h1.post-title= page.title
+    .post-meta= page.date.format('ll')
+      if page.categories.length > 0
+        span= ' | '
+        span.category
+          for category in page.categories.toArray()
+            a(href=url_for(category.path))= category.name
+      if theme.busuanzi == true
+        script(src='https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js', async)
+        span#busuanzi_container_page_pv= ' | '
+          span#busuanzi_value_page_pv
+          span= ' ' + __('Hits')
+      if theme.wordcount == true
+        include _partial/wordcount.pug
+    if theme.disqus
+      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
+    if theme.changyan
+      a.ds-thread-count(href=url_for(page.path) + '#SOHUCS')
+        span#changyan_count_unit(style='font-size: 15px; color: #6E7173;') 0
+        span= ' ' + __('Comment')
+      script(src='https://assets.changyan.sohu.com/upload/plugins/plugins.count.js', async)
+    if theme.valine.enable
+      a.disqus-comment-count( href=url_for(page.path) + '#vcomment')
+        span.valine-comment-count(data-xid=url_for(page.path))
+        span= ' ' + __('Comment')
+    if page.toc
+      div(class='clear')
+        div(id='toc' class='toc-article')
+          div(class='toc-title')= __('contents')
+          != toc(page.content, {list_number: theme.toc_number})
+    .post-content
+      != page.content
+    if theme.donate.enable == true
+      iframe(src='/donate/?AliPayQR=' + theme.donate.alipay_qr + '&WeChatQR=' + theme.donate.wechat_qr + '&GitHub=' + theme.donate.github + '&BTCQR=' + theme.donate.btc_qr + '&BTCKEY='+ theme.donate.btc_key + '&PayPal=' + theme.donate.paypal_url, style='overflow-x:hidden; overflow-y:hidden; border:0xp none #fff; min-height:240px; width:100%;', frameborder='0', scrolling='no')
 
-    
-    <div class="content index py4">
-        
-        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
-  <header>
-    
-    <h1 class="posttitle" itemprop="name headline">
-        ss-NG+switchyOmega+Outline
-    </h1>
+    if theme.post_copyright.enable == true && page.copyright != false
+      div
+        ul.post-copyright
+          li.post-copyright-author
+            strong= __('copyright_author_prefix')
+            = theme.post_copyright.author
+          li.post-copyright-link
+            strong= __('copyright_link_prefix')
+            a(href='/' + page.path)= page.permalink
+          li.post-copyright-license
+            strong= __('copyright_declare_prefix')
+            if theme.post_copyright.copyright_text
+              != theme.post_copyright.copyright_text
+            else
+              != __('copyright_default_text')
+      br
 
+    if theme.shareto == true
+      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
+      a.article-share-link(data-url=page.permalink, data-id=page._id, data-qrcode=qrcode(page.permalink))= __('shareto')
 
+    include _partial/tag.pug
+    include _partial/post_nav.pug
 
-    <div class="meta">
-      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-        <span itemprop="name">Frank's Bl0g</span>
-      </span>
-      
-    <div class="postdate">
-      
-        <time datetime="2019-04-21T03:14:44.000Z" itemprop="datePublished">2019-04-21</time>
-        
-      
-    </div>
-
-
-      
-    <div class="article-category">
-        <i class="fas fa-archive"></i>
-        <a class="category-link" href="/categories/Daily/">Daily</a>
-    </div>
-
-
-      
-    <div class="article-tag">
-        <i class="fas fa-tag"></i>
-        <a class="tag-link" href="/tags/DUse/">DUse</a>
-    </div>
-
-
-    </div>
-  </header>
-  
-
-  <div class="content" itemprop="articleBody">
-    <p>前段时间自己的小飞机被封了，重新折腾了一遍，用了 Shadowsocks-NG + SwitchyOmega 。发现之前配的竟然忘记了。。。有的时候记性真得不好使了，这里简单写一下，方便以后环境的重新配置。</p>
-<p>服务器怎么配ss，详见<a href="https://suiyuanjian.com/124.html" target="_blank" rel="noopener">Google Cloud Platform安装SSR</a>，不再赘述。被封了，重新申请个IP再试试:)</p>
-<p>配好之后，同步下小飞机的配置。这时就可以使用小飞机+Chrome’SwitchyOmega插件造作了。默认SwitchyOmega有两个代理，分别是proxy/autoSwitch。这里把proxy的协议改成 <code>Socks5</code>，服务器 <code>127.0.0.1</code>，端口就得看看小飞机的配置了，我这里Socks5对应的是 <code>1086</code></p>
-<p><img src="/2019/04/21/ss-NG-switchyOmega/1.jpg" alt="setting-ss"></p>
-<p>OK，这一步基本就达到了全局代理的作用。接下来如何实现PAC模式呢。在autoSwitch中将默认服务器代理删掉。选择 <code>导入在线规则列表</code> 中的 <code>添加规则列表</code>，进一步 <code>规则列表格式：AutoProxy</code>，下面地址添加为：<code>https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt</code></p>
-<p><img src="/2019/04/21/ss-NG-switchyOmega/2.jpg" alt="setting-plg"></p>
-<p>按照如图添加更新、保存，就可以搭配小飞机ss的手动模式进行使用了。如果想换个服务器的端口直接kill掉重新生成即可。</p>
-<p>再说说，如果想让移动端也连上vpn，看了看国内好像的乱七八糟的，最后还是选用了Jigsaw团队的<a href="https://github.com/Jigsaw-Code/outline-server" target="_blank" rel="noopener">Outline</a>，服务端下载后可以选择DigitalOcean/GCP/AWS等等。点进去之后，直接获取命令，服务器会返回一个JSON串，直接在管理端加上就行。Outline提供了多个密钥分配，随意DIY~</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo bash -c <span class="string">"<span class="variable">$(wget -qO- https://raw.githubusercontent.com/Jigsaw-Code/outline-server/master/src/server_manager/install_scripts/install_server.sh)</span>"</span></span><br></pre></td></tr></table></figure>
-<p><img src="/2019/04/21/ss-NG-switchyOmega/3.jpg" alt="setting-outline"></p>
-<h4 id="掺杂点儿"><a href="#掺杂点儿" class="headerlink" title="掺杂点儿"></a>掺杂点儿</h4><p>这几天听到的事情挺多，认识的朋友也多了一些。总想做点儿什么，也终于知道该静下来做些什么。</p>
-<p>闭关2年，未来是什么样，不想去猜。到时候再来看看，Pz。</p>
-
-  </div>
-</article>
-
-
-
-        
-          <div id="footer-post-container">
-  <div id="footer-post">
-
-    <div id="nav-footer" style="display: none">
-      <ul>
-         
-          <li><a href="/">首页</a></li>
-         
-          <li><a href="/about/">关于</a></li>
-         
-          <li><a href="/archives/">归档</a></li>
-         
-          <li><a href="/projects_url">项目</a></li>
-        
-      </ul>
-    </div>
-
-    <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#掺杂点儿"><span class="toc-number">1.</span> <span class="toc-text">掺杂点儿</span></a></li></ol>
-    </div>
-
-    <div id="share-footer" style="display: none">
-      <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/&text=ss-NG+switchyOmega+Outline"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/&title=ss-NG+switchyOmega+Outline"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/&is_video=false&description=ss-NG+switchyOmega+Outline"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ss-NG+switchyOmega+Outline&body=Check out this article: https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/&title=ss-NG+switchyOmega+Outline"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/&title=ss-NG+switchyOmega+Outline"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/&title=ss-NG+switchyOmega+Outline"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/&title=ss-NG+switchyOmega+Outline"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/&name=ss-NG+switchyOmega+Outline&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-
-    <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
-        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
-    </div>
-
-  </div>
-</div>
-
-        
-        <footer id="footer">
-  <div class="footer-left">
-    Copyright &copy; 2019 Frank
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-         
-          <li><a href="/">首页</a></li>
-         
-          <li><a href="/about/">关于</a></li>
-         
-          <li><a href="/archives/">归档</a></li>
-         
-          <li><a href="/projects_url">项目</a></li>
-        
-      </ul>
-    </nav>
-  </div>
-</footer>
-
-    </div>
-    <!-- styles -->
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
-
-    <!-- jquery -->
-<script src="/lib/jquery/jquery.min.js"></script>
-<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
-<script src="/js/main.js"></script>
-<!-- search -->
-
-<!-- Google Analytics -->
-
-<!-- Baidu Analytics -->
-
-<!-- Disqus Comments -->
-
-
-</body>
-</html>
+    if page.comments
+      include _partial/comments.pug
