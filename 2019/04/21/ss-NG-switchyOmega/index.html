@@ -1,68 +1,58 @@
-extends base
-
-block title
-  title= page.title + ' | ' + config.title
-
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta= page.date.format('ll')
-      if page.categories.length > 0
-        span= ' | '
-        span.category
-          for category in page.categories.toArray()
-            a(href=url_for(category.path))= category.name
-      if theme.busuanzi == true
-        script(src='https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js', async)
-        span#busuanzi_container_page_pv= ' | '
-          span#busuanzi_value_page_pv
-          span= ' ' + __('Hits')
-      if theme.wordcount == true
-        include _partial/wordcount.pug
-    if theme.disqus
-      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
-    if theme.changyan
-      a.ds-thread-count(href=url_for(page.path) + '#SOHUCS')
-        span#changyan_count_unit(style='font-size: 15px; color: #6E7173;') 0
-        span= ' ' + __('Comment')
-      script(src='https://assets.changyan.sohu.com/upload/plugins/plugins.count.js', async)
-    if theme.valine.enable
-      a.disqus-comment-count( href=url_for(page.path) + '#vcomment')
-        span.valine-comment-count(data-xid=url_for(page.path))
-        span= ' ' + __('Comment')
-    if page.toc
-      div(class='clear')
-        div(id='toc' class='toc-article')
-          div(class='toc-title')= __('contents')
-          != toc(page.content, {list_number: theme.toc_number})
-    .post-content
-      != page.content
-    if theme.donate.enable == true
-      iframe(src='/donate/?AliPayQR=' + theme.donate.alipay_qr + '&WeChatQR=' + theme.donate.wechat_qr + '&GitHub=' + theme.donate.github + '&BTCQR=' + theme.donate.btc_qr + '&BTCKEY='+ theme.donate.btc_key + '&PayPal=' + theme.donate.paypal_url, style='overflow-x:hidden; overflow-y:hidden; border:0xp none #fff; min-height:240px; width:100%;', frameborder='0', scrolling='no')
-
-    if theme.post_copyright.enable == true && page.copyright != false
-      div
-        ul.post-copyright
-          li.post-copyright-author
-            strong= __('copyright_author_prefix')
-            = theme.post_copyright.author
-          li.post-copyright-link
-            strong= __('copyright_link_prefix')
-            a(href='/' + page.path)= page.permalink
-          li.post-copyright-license
-            strong= __('copyright_declare_prefix')
-            if theme.post_copyright.copyright_text
-              != theme.post_copyright.copyright_text
-            else
-              != __('copyright_default_text')
-      br
-
-    if theme.shareto == true
-      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
-      a.article-share-link(data-url=page.permalink, data-id=page._id, data-qrcode=qrcode(page.permalink))= __('shareto')
-
-    include _partial/tag.pug
-    include _partial/post_nav.pug
-
-    if page.comments
-      include _partial/comments.pug
+<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>ss-NG+switchyOmega+Outline | Frank's Bl0g</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">ss-NG+switchyOmega+Outline</h1><a id="logo" href="/.">Frank's Bl0g</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">ss-NG+switchyOmega+Outline</h1><div class="post-meta">Apr 21, 2019<span> | </span><span class="category"><a href="/categories/Daily/">Daily</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" data-disqus-identifier="2019/04/21/ss-NG-switchyOmega/" href="/2019/04/21/ss-NG-switchyOmega/#disqus_thread"></a><div class="post-content"><p>前段时间自己的小飞机被封了，重新折腾了一遍，用了 Shadowsocks-NG + SwitchyOmega 。发现之前配的竟然忘记了。。。有的时候记性真得不好使了，这里简单写一下，方便以后环境的重新配置。</p>
+<p>服务器怎么配ss，详见<a href="https://suiyuanjian.com/124.html" target="_blank" rel="noopener">Google Cloud Platform安装SSR</a>，不再赘述。被封了，重新申请个IP再试试:)</p>
+<p>配好之后，同步下小飞机的配置。这时就可以使用小飞机+Chrome’SwitchyOmega插件造作了。默认SwitchyOmega有两个代理，分别是proxy/autoSwitch。这里把proxy的协议改成 <code>Socks5</code>，服务器 <code>127.0.0.1</code>，端口就得看看小飞机的配置了，我这里Socks5对应的是 <code>1086</code></p>
+<p><img src="/2019/04/21/ss-NG-switchyOmega/1.jpg" alt="setting-ss"></p>
+<p>OK，这一步基本就达到了全局代理的作用。接下来如何实现PAC模式呢。在autoSwitch中将默认服务器代理删掉。选择 <code>导入在线规则列表</code> 中的 <code>添加规则列表</code>，进一步 <code>规则列表格式：AutoProxy</code>，下面地址添加为：<code>https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt</code></p>
+<p><img src="/2019/04/21/ss-NG-switchyOmega/2.jpg" alt="setting-plg"></p>
+<p>按照如图添加更新、保存，就可以搭配小飞机ss的手动模式进行使用了。如果想换个服务器的端口直接kill掉重新生成即可。</p>
+<p>再说说，如果想让移动端也连上vpn，看了看国内好像的乱七八糟的，最后还是选用了Jigsaw团队的<a href="https://github.com/Jigsaw-Code/outline-server" target="_blank" rel="noopener">Outline</a>，服务端下载后可以选择DigitalOcean/GCP/AWS等等。点进去之后，直接获取命令，服务器会返回一个JSON串，直接在管理端加上就行。Outline提供了多个密钥分配，随意DIY~</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo bash -c <span class="string">"<span class="variable">$(wget -qO- https://raw.githubusercontent.com/Jigsaw-Code/outline-server/master/src/server_manager/install_scripts/install_server.sh)</span>"</span></span><br></pre></td></tr></table></figure>
+<p><img src="/2019/04/21/ss-NG-switchyOmega/3.jpg" alt="setting-outline"></p>
+<h4 id="掺杂点儿"><a href="#掺杂点儿" class="headerlink" title="掺杂点儿"></a>掺杂点儿</h4><p>这几天听到的事情挺多，认识的朋友也多了一些。总想做点儿什么，也终于知道该静下来做些什么。</p>
+<p>闭关2年，未来是什么样，不想去猜。到时候再来看看，Pz。</p>
+</div><iframe src="/donate/?AliPayQR=/img/alipay.jpg&amp;WeChatQR=/img/wechat.jpg&amp;GitHub=null&amp;BTCQR=/img/btc.jpg&amp;BTCKEY=1DgCePEwFFHwJm9bmAiv1rpgtp8AqGw3aq&amp;PayPal=null" style="overflow-x:hidden; overflow-y:hidden; border:0xp none #fff; min-height:240px; width:100%;" frameborder="0" scrolling="no"></iframe><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>fr4nk404</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/04/21/ss-NG-switchyOmega/">https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>Copyright © 2019 fr4nk404's Blog. Powered by Hexo. Theme by Cho.</li></ul></div><br><div class="tags"><a href="/tags/DUse/">DUse</a></div><div class="post-nav"><a class="pre" href="/2019/04/21/ss-NG-switchyOmega+Outline/">ss-NG+switchyOmega+Outline</a><a class="next" href="/2019/02/19/https原理及部署/">部署https</a></div><div id="disqus_thread"><div class="btn_click_load"><button class="disqus_click_btn">阅读评论（请确保 Disqus 可以正常加载）</button></div><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega/';
+    this.page.identifier = '2019/04/21/ss-NG-switchyOmega/';
+    this.page.title = 'ss-NG+switchyOmega+Outline';
+  };</script><script type="text/javascript" id="disqus-lazy-load-script">$.ajax({
+url: 'https://disqus.com/next/config.json',
+timeout: 2500,
+type: 'GET',
+success: function(){
+  var d = document;
+  var s = d.createElement('script');
+  s.src = '//Fr4nk404.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', + new Date());
+  (d.head || d.body).appendChild(s);
+  $('.disqus_click_btn').css('display', 'none');
+},
+error: function() {
+  $('.disqus_click_btn').css('display', 'block');
+}
+});</script><script type="text/javascript" id="disqus-click-load">$('.btn_click_load').click(() => {  //click to load comments
+    (() => { // DON'T EDIT BELOW THIS LINE
+        var d = document;
+        var s = d.createElement('script');
+        s.src = '//Fr4nk404.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', + new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+    $('.disqus_click_btn').css('display','none');
+});</script><script type="text/javascript" id="disqus-count-script">$(function() {
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', '//disqus.com/next/config.json', true);
+     xhr.timeout = 2500;
+     xhr.onreadystatechange = function () {
+       if (xhr.readyState === 4 && xhr.status === 200) {
+         $('.post-meta .post-comments-count').show();
+         var s = document.createElement('script');
+         s.id = 'dsq-count-scr';
+         s.src = 'https://Fr4nk404.disqus.com/count.js';
+         s.async = true;
+         (document.head || document.body).appendChild(s);
+       }
+     };
+     xhr.ontimeout = function () { xhr.abort(); };
+     xhr.send(null);
+   });
+</script></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://fr4nk404.github.io"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Daily/">Daily</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Interesting/">Interesting</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Security/">Security</a><span class="category-list-count">3</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/PZ/" style="font-size: 15px;">PZ</a> <a href="/tags/Vuln-Exploit/" style="font-size: 15px;">Vuln Exploit</a> <a href="/tags/DUse/" style="font-size: 15px;">DUse</a> <a href="/tags/S3cur1ty/" style="font-size: 15px;">S3cur1ty</a> <a href="/tags/PT/" style="font-size: 15px;">PT</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/06/23/轰炸漏洞小结/">轰炸漏洞小结</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/20/CVE-2019-12136/">CVE-2019-12136</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/ss-NG-switchyOmega+Outline/">ss-NG+switchyOmega+Outline</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/ss-NG-switchyOmega/">ss-NG+switchyOmega+Outline</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/19/https原理及部署/">部署https</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/21/HHB/">平头哥HHB</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-comment-o"> 最近评论</i></div><script type="text/javascript" src="//Fr4nk404.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://hexo.imagemlt.xyz/" title="Imagemlt" target="_blank">Imagemlt</a><ul></ul><a href="http://blog.0kami.cn/" title="wh1t3p1g" target="_blank">wh1t3p1g</a><ul></ul><a href="http://www.recorday.cn/" title="C0d3r1iu" target="_blank">C0d3r1iu</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">Frank's Bl0g.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" color="0,0,0" opacity="0.5" zindex="-2" count="50" src="//lib.baomitu.com/canvas-nest.js/2.0.4/canvas-nest.umd.js"></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>
