@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Fr4nk404</title>
+  
+  <subtitle>Fr4nk404&#39;s Bl0g</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://fr4nk404.github.io/"/>
+  <updated>2019-12-02T14:47:34.000Z</updated>
+  <id>https://fr4nk404.github.io/</id>
+  
+  <author>
+    <name>Frank</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>HexoTheme Optimization</title>
+    <link href="https://fr4nk404.github.io/2019/07/01/HexoTheme-Optimization/"/>
+    <id>https://fr4nk404.github.io/2019/07/01/HexoTheme-Optimization/</id>
+    <published>2019-07-01T13:34:37.000Z</published>
+    <updated>2019-12-02T14:47:34.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="0x00-填坑-amp-优化"><a href="#0x00-填坑-amp-优化" class="headerlink" title="0x00 填坑&amp; 优化"></a>0x00 填坑&amp; 优化</h3><p>这几天看博客的时候发现有些功能很实用，但是需要基于现有的主题进行优化。中途遇到一些坑，这里简单记录一下，遇到问题持续更新。</p><a id="more"></a><h3 id="0x01-关于更换npm源"><a href="#0x01-关于更换npm源" class="headerlink" title="0x01 关于更换npm源"></a>0x01 关于更换npm源</h3><p>在给HexoTheme安装依赖时使用<code>npm</code>经常遇到网络不稳定安装失败的问题，这时我们通常会用淘宝的镜像替换npm：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 用cnpm安装软件</span><br><span class="line">npm install -g cnpm --registry=https://registry.npm.taobao.org</span><br><span class="line"># 改npm为淘宝的cnpm</span><br><span class="line">npm config set registry https://registry.npm.taobao.org</span><br></pre></td></tr></table></figure><p>的确替换之后，安装顺畅了很多。但是在我deploy的时候环境报错，找了找类似的issue，有人就没有问题。回去看了看npm的安装过程，想了下，应该是cnpm使用npm之前的依赖存在问题，然后<code>cnpm install</code>解决了问题，HexoTheme上线。</p><h3 id="0x02-加评论功能"><a href="#0x02-加评论功能" class="headerlink" title="0x02 加评论功能"></a>0x02 加评论功能</h3><p>写博客评论功能可以互动，平常用的时候很有用处。看了看觉得Disqus挺好用的，就直接迁移到自己的博客上来。网上轮子有很多，官网是<a href="https://disqus.com/" target="_blank" rel="noopener">https://disqus.com/</a> 。</p><p>选择在自己的站点安装，添加<code>站点的名字</code>，在安装Disqus的地方选择站点所属的平台，没有选<code>Universal Code</code>。</p><p><img src="/2019/07/01/HexoTheme-Optimization/1.jpg" alt="install"></p><p>接下来，配置Disqus的时候，在URL处写上网站地址，并完成创建。</p><p><img src="/2019/07/01/HexoTheme-Optimization/2.jpg" alt="configuration"></p><p>接下来在主题<code>_config.yml</code>中<code>disqus:</code>处写上上面填写的名称。有的无法进行评论，可能是因为设置了默认线路访问基于CodingPages,海外线路访问GithubPages。</p><h3 id="0x03-博客添加RSS"><a href="#0x03-博客添加RSS" class="headerlink" title="0x03 博客添加RSS"></a>0x03 博客添加RSS</h3><p>想着以后哪天做的东西多了，别人想订阅，这个时候就添加了一个rss的功能。首先安装依赖</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cnpm install hexo-generator-feed</span><br></pre></td></tr></table></figure><p>需要配置的地方是<strong>根目录和主题下的<code>_config.yml</code></strong>。<br>根目录<code>_config.yml</code>配置如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># RSS plugin</span><br><span class="line">plugin:</span><br><span class="line">- hexo-generator-feed</span><br><span class="line">#Feed Atom</span><br><span class="line">feed:</span><br><span class="line">type: atom</span><br><span class="line">path: atom.xml</span><br><span class="line">limit: 20</span><br></pre></td></tr></table></figure><p>主题目录<code>_config.yml</code>配置：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">subnav:</span><br><span class="line">rss: &quot;/atom.xml&quot;</span><br></pre></td></tr></table></figure><p>配置后，可以通过<code>hexo g</code>看<code>public</code>目录下是否生成了<code>atom.xml</code>来判断是否成功。</p><h3 id="0x04-添加赞赏功能"><a href="#0x04-添加赞赏功能" class="headerlink" title="0x04 添加赞赏功能"></a>0x04 添加赞赏功能</h3><p>可以直接引入集成的功能，推荐一个插件<a href="https://github.com/Kaiyuan/sponsor-page" target="_blank" rel="noopener">https://github.com/Kaiyuan/sponsor-page</a> 。</p><h3 id="0x05-小声bb"><a href="#0x05-小声bb" class="headerlink" title="0x05 小声bb"></a>0x05 小声bb</h3><p>还有一些小功能，因为是轮子，直接添加到Reference里面了，感兴趣可以自取。</p><p>之前写博客的时候，想着完成70%主体功能就行了，扣细枝末节的时间可以学更多其他东西。这次因为换了主题，更新了一波，该改的改，该加的加。逐渐体会到之前和P师傅聊天时，讲到学习能力的重要性了。沉下心去，不断迁移已有的轮子到自己的需求上，本质上是一种学习能力，学习过程中可以不断积累技术和技巧的。在需求应用角度上，有兴趣再去学习如何建造轮子。这种思维，相对从头学造轮子来说更能适应不断演化的技术，提高效率。</p><h3 id="0x06-Reference"><a href="#0x06-Reference" class="headerlink" title="0x06 Reference"></a>0x06 Reference</h3><ol><li><a href="https://www.haomwei.com/technology/maupassant-hexo.html" target="_blank" rel="noopener">https://www.haomwei.com/technology/maupassant-hexo.html</a></li><li><a href="https://www.jianshu.com/p/d68de067ea74" target="_blank" rel="noopener">https://www.jianshu.com/p/d68de067ea74</a></li><li><a href="https://github.com/tufu9441/maupassant-hexo/issues" target="_blank" rel="noopener">https://github.com/tufu9441/maupassant-hexo/issues</a></li><li><a href="https://www.yfshare.vip/2017/02/14/Hexo%E6%B7%BB%E5%8A%A0RSS%E8%AE%A2%E9%98%85%E5%8A%9F%E8%83%BD/" target="_blank" rel="noopener">https://www.yfshare.vip/2017/02/14/Hexo%E6%B7%BB%E5%8A%A0RSS%E8%AE%A2%E9%98%85%E5%8A%9F%E8%83%BD/</a></li><li><a href="https://github.com/Kaiyuan/sponsor-page" target="_blank" rel="noopener">https://github.com/Kaiyuan/sponsor-page</a></li><li><a href="http://huanyouchen.github.io/2019/03/22/add-tags-pages-to-hexo-maupassant-theme/" target="_blank" rel="noopener">http://huanyouchen.github.io/2019/03/22/add-tags-pages-to-hexo-maupassant-theme/</a></li></ol>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;0x00-填坑-amp-优化&quot;&gt;&lt;a href=&quot;#0x00-填坑-amp-优化&quot; class=&quot;headerlink&quot; title=&quot;0x00 填坑&amp;amp; 优化&quot;&gt;&lt;/a&gt;0x00 填坑&amp;amp; 优化&lt;/h3&gt;&lt;p&gt;这几天看博客的时候发现有些功能很实用，但是需要基于现有的主题进行优化。中途遇到一些坑，这里简单记录一下，遇到问题持续更新。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Daily" scheme="https://fr4nk404.github.io/categories/Daily/"/>
+    
+    
+      <category term="DailyUse" scheme="https://fr4nk404.github.io/tags/DailyUse/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>轰炸漏洞小结</title>
+    <link href="https://fr4nk404.github.io/2019/06/23/%E8%BD%B0%E7%82%B8%E6%BC%8F%E6%B4%9E%E5%B0%8F%E7%BB%93/"/>
+    <id>https://fr4nk404.github.io/2019/06/23/%E8%BD%B0%E7%82%B8%E6%BC%8F%E6%B4%9E%E5%B0%8F%E7%BB%93/</id>
+    <published>2019-06-23T07:20:11.000Z</published>
+    <updated>2019-12-02T12:30:52.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近做一些测试的时候遇到了挺多有意思短信轰炸的攻、防场景和思路，这里简单记录一下相关内容。</p><h3 id="0x00-前期准备"><a href="#0x00-前期准备" class="headerlink" title="0x00 前期准备"></a>0x00 前期准备</h3><p>在网站测试的过程中，常常在用户注册登录时出现手机号/邮箱注册，这里收集了较为流行的临时接收短信的网站，可用于测试。具体如下：</p><ol><li><a href="https://www.pdflibr.com/" target="_blank" rel="noopener">https://www.pdflibr.com/</a></li><li><a href="http://www.z-sms.com/" target="_blank" rel="noopener">http://www.z-sms.com/</a></li><li><a href="https://www.receive-sms-online.info/" target="_blank" rel="noopener">https://www.receive-sms-online.info/</a></li><li>[随机推送] <a href="https://yunduanxin.net/" target="_blank" rel="noopener">https://yunduanxin.net/</a></li><li>[国内] <a href="http://www.smszk.com/" target="_blank" rel="noopener">http://www.smszk.com/</a></li><li>[国外] <a href="http://receive-sms-online.com/" target="_blank" rel="noopener">http://receive-sms-online.com/</a></li><li>[国外] <a href="https://smsnumbersonline.com/" target="_blank" rel="noopener">https://smsnumbersonline.com/</a></li><li>[国外] <a href="https://www.freeonlinephone.org/" target="_blank" rel="noopener">https://www.freeonlinephone.org/</a></li><li>[国外] <a href="https://sms-online.co/receive-free-sms" target="_blank" rel="noopener">https://sms-online.co/receive-free-sms</a></li></ol><p>与此同时，写了个爬虫整理了上面涉及到的phone list，可作为黑名单进行反作弊建设：<br><a href="https://gist.github.com/fr4nk404/1d8317a5f66ebe0933b8fade897497ff" target="_blank" rel="noopener">https://gist.github.com/fr4nk404/1d8317a5f66ebe0933b8fade897497ff</a></p><h3 id="0x01-常见问题"><a href="#0x01-常见问题" class="headerlink" title="0x01 常见问题"></a>0x01 常见问题</h3><h4 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h4><p>目前，商业网站的用户账号基本上是以手机号/邮箱注册登录，这样能够方便用户使用短信/邮箱验证码直接登入账户，在使用的过程中进行更好的账户管理。在以简易便捷为目的的基础上方便用户管理账号时也引入了安全风险，即短信炸弹/垃圾邮件等。</p><p>从企业的角度上看，短信的发送需要向运营商交付一些费用。尽管企业短信费用比个人用户低廉，但是一旦被恶意利用发送大量短信后，将会造成较大的直接经济、信息和名誉损失。<br>从用户的角度上看，大量垃圾短信的发送将会直接造成信息骚扰。而当大量网站被恶意利用者掌握时，针对指定号码的黑名单防护将失去效用，从而造成个人骚扰。<br>从攻击者的角度上看，可以将前期收集到包含该漏洞的网站集成到攻击工具中，对指定用户、企业域名邮箱用户进行短信轰炸、个人骚扰等。<br>从进一步漏洞利用角度看，可通过注册接口测试账号是否注册过，结合社工库可进行撞库等；若发送的信息内容在发送信息的请求包中，攻击者也可自定义发送内容，从而造成进一步的钓鱼利用等。</p><h4 id="2-一般功能"><a href="#2-一般功能" class="headerlink" title="2. 一般功能"></a>2. 一般功能</h4><p>在应用手机号/邮箱和验证码作为用户登录凭证时，一般涉及到的网站功能点主要包括：</p><ul><li>账号注册</li><li>首次设置密码时用户身份校验</li><li>账号登录(可选验证码方式)</li><li>重置密码</li><li>绑定手机/邮箱</li><li>修改绑定手机/邮箱</li><li>免费试用/活动领取/独特功能/反馈处</li><li>待补充…</li></ul><h3 id="0x02-短信-邮件轰炸"><a href="#0x02-短信-邮件轰炸" class="headerlink" title="0x02 短信/邮件轰炸"></a>0x02 短信/邮件轰炸</h3><h4 id="1-一般测试方法"><a href="#1-一般测试方法" class="headerlink" title="1. 一般测试方法"></a>1. 一般测试方法</h4><p>在网站账户注册处，填写手机号/邮箱。使用Burp抓包发送到Repeater进行重放测试，返回结果为发送成功。</p><p><img src="/2019/06/23/轰炸漏洞小结/IMG1.png" alt="Repeater"></p><p>尝试测试是否设有频控，一般测试10~20次。若持续可接收验证码，则证明漏洞存在。</p><p><img src="/2019/06/23/轰炸漏洞小结/IMG2.jpeg" alt="Regular Method"></p><h4 id="2-删除Cookie"><a href="#2-删除Cookie" class="headerlink" title="2. 删除Cookie"></a>2. 删除Cookie</h4><p>最近做测试的时候还遇到某网站在注册功能，响应头Session中存放了一个token，用户在前端触发具体操作时会根据该token生成另一个key，提交时后端再根据token和key验证是否合法来拦截短信轰炸。在这种情况下，每次触发接收验证码时，只需提前将cookie删除，即可绕过拦截。</p><p><img src="/2019/06/23/轰炸漏洞小结/IMG3.jpeg" alt="Cookie Delete"></p><h4 id="3-修改Cookie"><a href="#3-修改Cookie" class="headerlink" title="3. 修改Cookie"></a>3. 修改Cookie</h4><p>在做安全防御时，一些网站在注册请求Cookie中存放一个固定值，当前端发送请求时，该值唯一校验一次。因此可通过在该请求Cookie中添加简单的数字后缀进行绕过[3]；</p><h4 id="4-设计缺陷"><a href="#4-设计缺陷" class="headerlink" title="4. 设计缺陷"></a>4. 设计缺陷</h4><p>另外，最近遇到的一个情况是在某办公协作系统域名下的不同子域中，如在 <code>www.A.com</code> 域名下进行账户注册，注册成功随即默认登录（该处服务端已做了手机号的频率控制）。而在该域名 <code>A.com</code> 的另一个子域名 <code>test.A.com</code> 下没有注册功能，用户可用在 <code>www.A.com</code> 域名下注册的账号进行首次登录，并设置密码。而此时，在 <code>test.A.com</code> 中进行首次登录时验证码登录未做频控。此处场景利用主要用于企业统一账号登录的多平台设计一致性。</p><p><img src="/2019/06/23/轰炸漏洞小结/IMG4.png" alt="Design Defect"></p><h4 id="5-其他相关问题"><a href="#5-其他相关问题" class="headerlink" title="5. 其他相关问题"></a>5. 其他相关问题</h4><p>在漏洞挖掘的过程中，手机/邮箱账号登录验证还涉及到了一些如越权、逻辑缺陷其他问题，此处结合轰炸问题一起分享出来。</p><ul><li>修改绑定</li></ul><p>在登入网站账户后，一般带有修改绑定等功能。正常流程修改绑定流程如图：</p><p><img src="/2019/06/23/轰炸漏洞小结/IMG5.png" alt="Change Binding"></p><p>（1）由于逻辑设计缺陷，攻击者可在未接收到服务端验证码时修改 <code>服务端校验的返回包文为校验正确包文</code>(如图流程)，从而绕过原手机号验证，越权进行账号重绑定；</p><p>（2）按照正常流程发送请求包，将 <code>提交新手机号并获取验证码过程</code>(如图流程)单独拿出。有些服务因逻辑缺陷，未在之前的流程中添加校验正确的token，导致该请求包可以在登入账号的情况下无需校验原手机号，只需从 <code>发送提交新手机号验证码包文</code>处开始流程即可。</p><p>同时，有些服务由于在修改绑定处默认认为账号登录安全，因此未进行短信轰炸的防御，从而可以在此处 <code>修改绑定</code> 位置进行短信轰炸。</p><h3 id="0x03-轰炸防御"><a href="#0x03-轰炸防御" class="headerlink" title="0x03 轰炸防御"></a>0x03 轰炸防御</h3><p>服务端限制同一手机号单位时间内的发送次数和时间间隔，如超过限制则根据业务需求进行相应时间的禁止限制；<br>根据业务特点，设定手机验证码每天的最大发送量；<br>对每一步的请求验证严格，要以上一步的结果为依据，同时应注意尽量避免攻击者可控，如在请求参数中随机假如一个key，并贯穿验证的始终；<br>绑定图形校验码，将手机验证码和图形校验码进行绑定，防止恶意攻击；<br>服务端返回给用户的验证相关内容避免在请求中独立展示，减少攻击者可控点，降低钓鱼风险。</p><h3 id="0x04-小结"><a href="#0x04-小结" class="headerlink" title="0x04 小结"></a>0x04 小结</h3><p>在以上问题分析过程中，从攻、防角度双向分析了一些短信轰炸/垃圾邮件可能出现的思路，可供参考~</p><h3 id="0x05-参考链接"><a href="#0x05-参考链接" class="headerlink" title="0x05 参考链接"></a>0x05 参考链接</h3><ol><li><a href="https://www.anquanke.com/post/id/93878" target="_blank" rel="noopener">https://www.anquanke.com/post/id/93878</a></li><li><a href="http://www.voidcn.com/article/p-fullylpc-brm.html" target="_blank" rel="noopener">http://www.voidcn.com/article/p-fullylpc-brm.html</a></li><li><a href="https://bbs.ichunqiu.com/thread-27614-1-1.html" target="_blank" rel="noopener">https://bbs.ichunqiu.com/thread-27614-1-1.html</a></li><li><a href="https://www.4hou.com/mobile/16442.html" target="_blank" rel="noopener">https://www.4hou.com/mobile/16442.html</a></li><li><a href="https://juejin.im/post/5994fbecf265da246e6de3f9" target="_blank" rel="noopener">https://juejin.im/post/5994fbecf265da246e6de3f9</a></li></ol>]]></content>
+    
+    <summary type="html">
+    
+      最近做一些测试的时候遇到了挺多有意思短信轰炸的攻、防场景和思路，这里简单记录一下相关内容。
+    
+    </summary>
+    
+    
+      <category term="Security" scheme="https://fr4nk404.github.io/categories/Security/"/>
+    
+    
+      <category term="Pentest" scheme="https://fr4nk404.github.io/tags/Pentest/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CVE-2019-12136</title>
+    <link href="https://fr4nk404.github.io/2019/05/20/CVE-2019-12136/"/>
+    <id>https://fr4nk404.github.io/2019/05/20/CVE-2019-12136/</id>
+    <published>2019-05-20T14:29:27.000Z</published>
+    <updated>2019-12-02T12:51:02.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>这几天在挖Electron的XSS，挖了下自己平时在用的一个md笔记。发现Boostnote客户端v0.11.15版本<code>iframe</code>的<code>src</code>属性没做过滤，存在XSS。</p><a id="more"></a><p><img src="/2019/05/20/CVE-2019-12136/1.jpeg" alt="poc"></p><p>尝试看能不能xss2rce，直接执行没执行成功。应该是<code>nodeIntegration</code>做了限制，后来在<a href="https://github.com/imagemlt" target="_blank" rel="noopener">imagemlt</a>师傅的提示下，注意到boostnote的markdown渲染是一个iframe。</p><p><img src="/2019/05/20/CVE-2019-12136/2.png" alt="iframe"></p><p>看到iframe中有全局的parent，进一步调试利用~</p><p><img src="/2019/05/20/CVE-2019-12136/3.png" alt="parent"></p><p>发现虽然在iframe中无法直接用<code>require</code>构造RCE，但仍然可以向父节点递归找到全局可应用的Webview。</p><p><img src="/2019/05/20/CVE-2019-12136/4.png" alt="rce"></p><p>最终成功RCE。</p><p><img src="/2019/05/20/CVE-2019-12136/5.png" alt="xss2rce"></p><p>尝试了另外几个使用相同插件的md笔记，有几个同样可以成功XD。同时，水了人生中第一个CVE纪念一下~</p><h2 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h2><ol><li><a href="https://nvd.nist.gov/vuln/detail/CVE-2019-12136" target="_blank" rel="noopener">NVD - CVE-2019-12136</a></li><li><a href="https://electronjs.org/docs/tutorial/security#%E5%AE%89%E5%85%A8%E6%80%A7%EF%BC%8C%E5%8E%9F%E7%94%9F%E8%83%BD%E5%8A%9B%E5%92%8C%E4%BD%A0%E7%9A%84%E8%B4%A3%E4%BB%BB" target="_blank" rel="noopener">安全性，原生能力和你的责任 Electron</a></li><li><a href="https://vuldb.com/?id.135126" target="_blank" rel="noopener">BoostIO Boostnote 0.11.15 iFRAME Element cross site scripting</a></li><li><a href="https://www.blackhat.com/docs/us-17/thursday/us-17-Carettoni-Electronegativity-A-Study-Of-Electron-Security-wp.pdf" target="_blank" rel="noopener">Electronegativity-A-Study-Of-Electron-Security</a></li></ol>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;这几天在挖Electron的XSS，挖了下自己平时在用的一个md笔记。发现Boostnote客户端v0.11.15版本&lt;code&gt;iframe&lt;/code&gt;的&lt;code&gt;src&lt;/code&gt;属性没做过滤，存在XSS。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Security" scheme="https://fr4nk404.github.io/categories/Security/"/>
+    
+    
+      <category term="VulnExploit" scheme="https://fr4nk404.github.io/tags/VulnExploit/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ss-NG+switchyOmega+Outline</title>
+    <link href="https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega+Outline/"/>
+    <id>https://fr4nk404.github.io/2019/04/21/ss-NG-switchyOmega+Outline/</id>
+    <published>2019-04-21T03:14:44.000Z</published>
+    <updated>2019-12-02T12:50:56.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>前段时间自己的小飞机被封了，重新折腾了一遍，用了 Shadowsocks-NG + SwitchyOmega 。发现之前配的竟然忘记了。。。有的时候记性真得不好使了，这里简单写一下，方便以后环境的重新配置。</p><a id="more"></a><p>服务器怎么配ss，详见<a href="https://suiyuanjian.com/124.html" target="_blank" rel="noopener">Google Cloud Platform安装SSR</a>，不再赘述。被封了，重新申请个IP再试试:)</p><p>配好之后，同步下小飞机的配置。这时就可以使用小飞机+Chrome’SwitchyOmega插件造作了。默认SwitchyOmega有两个代理，分别是proxy/autoSwitch。这里把proxy的协议改成 <code>Socks5</code>，服务器 <code>127.0.0.1</code>，端口就得看看小飞机的配置了，我这里Socks5对应的是 <code>1086</code></p><p><img src="/2019/04/21/ss-NG-switchyOmega+Outline/1.jpg" alt="setting-ss"></p><p>OK，这一步基本就达到了全局代理的作用。接下来如何实现PAC模式呢。在autoSwitch中将默认服务器代理删掉。选择 <code>导入在线规则列表</code> 中的 <code>添加规则列表</code>，进一步 <code>规则列表格式：AutoProxy</code>，下面地址添加为：<code>https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt</code></p><p><img src="/2019/04/21/ss-NG-switchyOmega+Outline/2.jpg" alt="setting-plg"></p><p>按照如图添加更新、保存，就可以搭配小飞机ss的手动模式进行使用了。如果想换个服务器的端口直接kill掉重新生成即可。</p><p>再说说，如果想让移动端也连上vpn，看了看国内好像的乱七八糟的，最后还是选用了Jigsaw团队的<a href="https://github.com/Jigsaw-Code/outline-server" target="_blank" rel="noopener">Outline</a>，服务端下载后可以选择DigitalOcean/GCP/AWS等等。点进去之后，直接获取命令，服务器会返回一个JSON串，直接在管理端加上就行。Outline提供了多个密钥分配，随意DIY~</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo bash -c <span class="string">"<span class="variable">$(wget -qO- https://raw.githubusercontent.com/Jigsaw-Code/outline-server/master/src/server_manager/install_scripts/install_server.sh)</span>"</span></span><br></pre></td></tr></table></figure><p><img src="/2019/04/21/ss-NG-switchyOmega+Outline/3.jpg" alt="setting-outline"></p><h4 id="掺杂点儿"><a href="#掺杂点儿" class="headerlink" title="掺杂点儿"></a>掺杂点儿</h4><p>这几天听到的事情挺多，认识的朋友也多了一些。总想做点儿什么，也终于知道该静下来做些什么。</p><p>闭关2年，未来是什么样，不想去猜。到时候再来看看，Pz。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;前段时间自己的小飞机被封了，重新折腾了一遍，用了 Shadowsocks-NG + SwitchyOmega 。发现之前配的竟然忘记了。。。有的时候记性真得不好使了，这里简单写一下，方便以后环境的重新配置。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Daily" scheme="https://fr4nk404.github.io/categories/Daily/"/>
+    
+    
+      <category term="DailyUse" scheme="https://fr4nk404.github.io/tags/DailyUse/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>部署https</title>
+    <link href="https://fr4nk404.github.io/2019/02/19/https%E5%8E%9F%E7%90%86%E5%8F%8A%E9%83%A8%E7%BD%B2/"/>
+    <id>https://fr4nk404.github.io/2019/02/19/https%E5%8E%9F%E7%90%86%E5%8F%8A%E9%83%A8%E7%BD%B2/</id>
+    <published>2019-02-19T14:30:04.000Z</published>
+    <updated>2019-12-02T12:26:07.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><strong>想起之前跟踪Vault 8蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。</strong></p><h4 id="理论知识"><a href="#理论知识" class="headerlink" title="理论知识"></a>理论知识</h4><a id="more"></a><ol><li>数字证书是一种网络上证明持有者身份的文件，同时还包含有公钥。证书的真伪需要一个验证方式，而验证方需要认同这种验证方式，以完成证书的颁发过程。一个https的站点需要和一个证书绑定，客户端通过维护一个“根受信任机构列表”完成站点的可信识别过程，而客户端是否信任这个站点的证书取决于客户端程序是否导入了证书颁发者的根证书。</li><li>以下证书生成过程基于openssl，它是一个安全套接字层密码库，囊括主要的密码算法、常用的密钥和证书封装管理功能及SSL协议，并提供丰富的应用程序供测试或其它目的使用。我们应用它构造密钥并进行X.509证书伪造。</li><li>X.509证书是一种通用的证书格式，符合ITU-T X.509国际标准，它主要包含三个文件：key，csr，crt。<br><em>key</em>是服务器上的私钥文件，用于对发送给客户端数据的加密，以及对从客户端接收到数据的解密；<br><em>csr</em>是证书签名请求文件，用于提交给证书颁发机构（CA）对证书签名；<br><em>crt</em>是由证书颁发机构（CA）签名后的证书，或者是开发者自签名的证书，包含证书持有人的信息，持有人的公钥，以及签署者的签名等信息。</li><li>了解linux中Apache服务的相关知识，对其配置文件：/etc/apache2/sites-<br>available/default-ssl.conf有基础的了解；了解linux下提供dns服务器的bind9服务相关配置。</li></ol><h4 id="实验过程"><a href="#实验过程" class="headerlink" title="实验过程"></a>实验过程</h4><p>浏览器／服务器环境<br>服务器配置：apache2+bind9+openssl<br>证书颁发过程如下：<img src="/2019/02/19/https原理及部署/concept.png" alt="concept"></p><ol><li>开启Apache2的SSL模块，详见/etc/apache2/sites-available/default-ssl.conf：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 开启SSL模块</span><br><span class="line">SSLEngine on</span><br></pre></td></tr></table></figure></li></ol><p>这段配置代码的作用是将我们生成的证书导入到网站中从而实现https安全访问。</p><ol start="2"><li>首先生成一个私钥，用于对通信过程中数据的加解密；生成私钥后，创建证书签名请求并发送给证书颁发机构；证书颁发机构验证请求者的身份之后，出具签名证书。本实验通过openssl实现证书颁发过程。<ul><li>生成RSA密钥文件KEY。用于对发送给客户端数据的加密，以及对从客户端接收到数据的解密。</li><li>生成证书请求文件CSR，用于提交给证书颁发机构（CA）对证书签名。</li><li>生成CA证书。前面提过X.509证书的认证者总是CA或由CA指定的人，所以得先生成CA的证书。</li><li>生成自颁证书。用上一步生成的CA证书给自己颁发证书<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 生成rsa私钥、2048位强度、密钥文件名server.key</span><br><span class="line">openssl genrsa -out server.key 2048 </span><br><span class="line"># 生成请求文件。依次输入国家，地区，城市，组织，组织单位，Common Name和Email。</span><br><span class="line"># Common Name应该与域名保持一致，否则会引起浏览器警告。</span><br><span class="line">openssl req -new -key server.key -out server.csr  </span><br><span class="line"># 生成CA证书 ca.crt是根证书</span><br><span class="line">openssl req -new -x509 -key server.key -out ca.crt -days 3650</span><br><span class="line"># 自颁证书。server.crt有证书持有人信息，持有人公钥以及签署者的签名等信息</span><br><span class="line">openssl x509 -req -days 3650 -in server.csr \</span><br><span class="line">-CA ca.crt -CAkey server.key \</span><br><span class="line">-CAcreateserial -out server.crt</span><br></pre></td></tr></table></figure></li></ul></li></ol><p>至此，证书生成过程完成。分别生成如下文件</p><blockquote><p>server.key  私钥<br>server.csr  证书请求文件<br>ca.crt      CA证书<br>server.crt  自颁发的证书<br>最后，将生成的用于加解密的密钥和签署的自颁证书文件导入到Apache服务器配置文件/etc/apache2/sites-available/default-ssl.conf中</p></blockquote><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 存放签署过的证书</span><br><span class="line">SSLCertificateFile      /etc/ssl/certs/server.crt</span><br><span class="line"># 存放签署过的私钥</span><br><span class="line">SSLCertificateKeyFile   /etc/ssl/private/server.key</span><br></pre></td></tr></table></figure><h5 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h5><p>在浏览器“受信任的根证书颁发机构”中导入根证书文件ca.crt，实现https安全访问网站。<br><img src="/2019/02/19/https原理及部署/result.png" alt="result"></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;strong&gt;想起之前跟踪Vault 8蜂巢Hive框架的时候，做了一个关于可信https的实验，记录一下。&lt;/strong&gt;&lt;/p&gt;
+&lt;h4 id=&quot;理论知识&quot;&gt;&lt;a href=&quot;#理论知识&quot; class=&quot;headerlink&quot; title=&quot;理论知识&quot;&gt;&lt;/a&gt;理论知识&lt;/h4&gt;
+    
+    </summary>
+    
+    
+      <category term="Security" scheme="https://fr4nk404.github.io/categories/Security/"/>
+    
+    
+      <category term="https" scheme="https://fr4nk404.github.io/tags/https/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>平头哥HHB</title>
+    <link href="https://fr4nk404.github.io/2019/01/21/HHB/"/>
+    <id>https://fr4nk404.github.io/2019/01/21/HHB/</id>
+    <published>2019-01-21T14:58:46.000Z</published>
+    <updated>2019-12-02T12:25:49.000Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="平头哥人生十大铁律"><a href="#平头哥人生十大铁律" class="headerlink" title="平头哥人生十大铁律"></a>平头哥人生十大铁律</h4><a id="more"></a><ol><li><p>生死看淡不服就干</p></li><li><p>我只想整死各位，或者被各位整死</p></li><li><p>别人的是我的，我的还是我的</p></li><li><p>我也不想针对谁，在我眼里你们都能吃</p></li><li><p>我干起仗来，我自己都怕</p></li><li><p>平头白发银披风，非洲大地我最凶</p></li><li><p>芸芸众生，皆为吾餐</p></li><li><p>我这一生就是太忙碌了，不是干架就是在干架的路上</p></li><li><p>老子不记仇，有仇当场就报了</p></li><li><p>张狂不是我的本性，但是惹我就等于自杀</p></li></ol><p><img src="/2019/01/21/HHB/hhb.jpg" alt="hhb"></p><p><em>有时就要好比平头哥一样，虽然弱势、体态小，却无所畏惧、以小博大。</em></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;平头哥人生十大铁律&quot;&gt;&lt;a href=&quot;#平头哥人生十大铁律&quot; class=&quot;headerlink&quot; title=&quot;平头哥人生十大铁律&quot;&gt;&lt;/a&gt;平头哥人生十大铁律&lt;/h4&gt;
+    
+    </summary>
+    
+    
+      <category term="Interesting" scheme="https://fr4nk404.github.io/categories/Interesting/"/>
+    
+    
+      <category term="bb" scheme="https://fr4nk404.github.io/tags/bb/"/>
+    
+  </entry>
+  
+</feed>

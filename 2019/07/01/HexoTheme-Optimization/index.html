@@ -1,0 +1,75 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>HexoTheme Optimization | Fr4nk404</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">HexoTheme Optimization</h1><a id="logo" href="/.">Fr4nk404</a><p class="description">Fr4nk404's Bl0g</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/tags/"><i class="fa fa-tags"> 标签</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">HexoTheme Optimization</h1><div class="post-meta">Jul 1, 2019<span> | </span><span class="category"><a href="/categories/Daily/">Daily</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" data-disqus-identifier="2019/07/01/HexoTheme-Optimization/" href="/2019/07/01/HexoTheme-Optimization/#disqus_thread"></a><div class="post-content"><h3 id="0x00-填坑-amp-优化"><a href="#0x00-填坑-amp-优化" class="headerlink" title="0x00 填坑&amp; 优化"></a>0x00 填坑&amp; 优化</h3><p>这几天看博客的时候发现有些功能很实用，但是需要基于现有的主题进行优化。中途遇到一些坑，这里简单记录一下，遇到问题持续更新。</p>
+<a id="more"></a>
+<h3 id="0x01-关于更换npm源"><a href="#0x01-关于更换npm源" class="headerlink" title="0x01 关于更换npm源"></a>0x01 关于更换npm源</h3><p>在给HexoTheme安装依赖时使用<code>npm</code>经常遇到网络不稳定安装失败的问题，这时我们通常会用淘宝的镜像替换npm：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 用cnpm安装软件</span><br><span class="line">npm install -g cnpm --registry=https://registry.npm.taobao.org</span><br><span class="line"># 改npm为淘宝的cnpm</span><br><span class="line">npm config set registry https://registry.npm.taobao.org</span><br></pre></td></tr></table></figure>
+<p>的确替换之后，安装顺畅了很多。但是在我deploy的时候环境报错，找了找类似的issue，有人就没有问题。回去看了看npm的安装过程，想了下，应该是cnpm使用npm之前的依赖存在问题，然后<code>cnpm install</code>解决了问题，HexoTheme上线。</p>
+<h3 id="0x02-加评论功能"><a href="#0x02-加评论功能" class="headerlink" title="0x02 加评论功能"></a>0x02 加评论功能</h3><p>写博客评论功能可以互动，平常用的时候很有用处。看了看觉得Disqus挺好用的，就直接迁移到自己的博客上来。网上轮子有很多，官网是<a href="https://disqus.com/" target="_blank" rel="noopener">https://disqus.com/</a> 。</p>
+<p>选择在自己的站点安装，添加<code>站点的名字</code>，在安装Disqus的地方选择站点所属的平台，没有选<code>Universal Code</code>。</p>
+<p><img src="/2019/07/01/HexoTheme-Optimization/1.jpg" alt="install"></p>
+<p>接下来，配置Disqus的时候，在URL处写上网站地址，并完成创建。</p>
+<p><img src="/2019/07/01/HexoTheme-Optimization/2.jpg" alt="configuration"></p>
+<p>接下来在主题<code>_config.yml</code>中<code>disqus:</code>处写上上面填写的名称。有的无法进行评论，可能是因为设置了默认线路访问基于CodingPages,海外线路访问GithubPages。</p>
+<h3 id="0x03-博客添加RSS"><a href="#0x03-博客添加RSS" class="headerlink" title="0x03 博客添加RSS"></a>0x03 博客添加RSS</h3><p>想着以后哪天做的东西多了，别人想订阅，这个时候就添加了一个rss的功能。首先安装依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cnpm install hexo-generator-feed</span><br></pre></td></tr></table></figure>
+<p>需要配置的地方是<strong>根目录和主题下的<code>_config.yml</code></strong>。<br>根目录<code>_config.yml</code>配置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># RSS plugin</span><br><span class="line">plugin:</span><br><span class="line">- hexo-generator-feed</span><br><span class="line">#Feed Atom</span><br><span class="line">feed:</span><br><span class="line">type: atom</span><br><span class="line">path: atom.xml</span><br><span class="line">limit: 20</span><br></pre></td></tr></table></figure>
+<p>主题目录<code>_config.yml</code>配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">subnav:</span><br><span class="line">rss: &quot;/atom.xml&quot;</span><br></pre></td></tr></table></figure>
+<p>配置后，可以通过<code>hexo g</code>看<code>public</code>目录下是否生成了<code>atom.xml</code>来判断是否成功。</p>
+<h3 id="0x04-添加赞赏功能"><a href="#0x04-添加赞赏功能" class="headerlink" title="0x04 添加赞赏功能"></a>0x04 添加赞赏功能</h3><p>可以直接引入集成的功能，推荐一个插件<a href="https://github.com/Kaiyuan/sponsor-page" target="_blank" rel="noopener">https://github.com/Kaiyuan/sponsor-page</a> 。</p>
+<h3 id="0x05-小声bb"><a href="#0x05-小声bb" class="headerlink" title="0x05 小声bb"></a>0x05 小声bb</h3><p>还有一些小功能，因为是轮子，直接添加到Reference里面了，感兴趣可以自取。</p>
+<p>之前写博客的时候，想着完成70%主体功能就行了，扣细枝末节的时间可以学更多其他东西。这次因为换了主题，更新了一波，该改的改，该加的加。逐渐体会到之前和P师傅聊天时，讲到学习能力的重要性了。沉下心去，不断迁移已有的轮子到自己的需求上，本质上是一种学习能力，学习过程中可以不断积累技术和技巧的。在需求应用角度上，有兴趣再去学习如何建造轮子。这种思维，相对从头学造轮子来说更能适应不断演化的技术，提高效率。</p>
+<h3 id="0x06-Reference"><a href="#0x06-Reference" class="headerlink" title="0x06 Reference"></a>0x06 Reference</h3><ol>
+<li><a href="https://www.haomwei.com/technology/maupassant-hexo.html" target="_blank" rel="noopener">https://www.haomwei.com/technology/maupassant-hexo.html</a></li>
+<li><a href="https://www.jianshu.com/p/d68de067ea74" target="_blank" rel="noopener">https://www.jianshu.com/p/d68de067ea74</a></li>
+<li><a href="https://github.com/tufu9441/maupassant-hexo/issues" target="_blank" rel="noopener">https://github.com/tufu9441/maupassant-hexo/issues</a></li>
+<li><a href="https://www.yfshare.vip/2017/02/14/Hexo%E6%B7%BB%E5%8A%A0RSS%E8%AE%A2%E9%98%85%E5%8A%9F%E8%83%BD/" target="_blank" rel="noopener">https://www.yfshare.vip/2017/02/14/Hexo%E6%B7%BB%E5%8A%A0RSS%E8%AE%A2%E9%98%85%E5%8A%9F%E8%83%BD/</a></li>
+<li><a href="https://github.com/Kaiyuan/sponsor-page" target="_blank" rel="noopener">https://github.com/Kaiyuan/sponsor-page</a></li>
+<li><a href="http://huanyouchen.github.io/2019/03/22/add-tags-pages-to-hexo-maupassant-theme/" target="_blank" rel="noopener">http://huanyouchen.github.io/2019/03/22/add-tags-pages-to-hexo-maupassant-theme/</a></li>
+</ol>
+</div><iframe src="/donate/?AliPayQR=img/alipay.jpg&amp;WeChatQR=img/wechat.jpg&amp;GitHub=https://github.com/fr4nk404&amp;BTCQR=img/btc.jpg&amp;BTCKEY=1DgCePEwFFHwJm9bmAiv1rpgtp8AqGw3aq&amp;PayPal=undefined" style="overflow-x:hidden; overflow-y:hidden; border:0xp none #fff; min-height:240px; width:100%;" frameborder="0" scrolling="no"></iframe><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>fr4nk404</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2019/07/01/HexoTheme-Optimization/">https://fr4nk404.github.io/2019/07/01/HexoTheme-Optimization/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>Copyright © 2019 fr4nk404's Blog. Powered by Hexo. Theme by Cho.</li></ul></div><br><div class="tags"><a href="/tags/DailyUse/">DailyUse</a></div><div class="post-nav"><a class="next" href="/2019/06/23/轰炸漏洞小结/">轰炸漏洞小结</a></div><div id="disqus_thread"><div class="btn_click_load"><button class="disqus_click_btn">阅读评论（请确保 Disqus 可以正常加载）</button></div><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'https://fr4nk404.github.io/2019/07/01/HexoTheme-Optimization/';
+    this.page.identifier = '2019/07/01/HexoTheme-Optimization/';
+    this.page.title = 'HexoTheme Optimization';
+  };</script><script type="text/javascript" id="disqus-lazy-load-script">$.ajax({
+url: 'https://disqus.com/next/config.json',
+timeout: 2500,
+type: 'GET',
+success: function(){
+  var d = document;
+  var s = d.createElement('script');
+  s.src = '//Fr4nk404.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', + new Date());
+  (d.head || d.body).appendChild(s);
+  $('.disqus_click_btn').css('display', 'none');
+},
+error: function() {
+  $('.disqus_click_btn').css('display', 'block');
+}
+});</script><script type="text/javascript" id="disqus-click-load">$('.btn_click_load').click(() => {  //click to load comments
+    (() => { // DON'T EDIT BELOW THIS LINE
+        var d = document;
+        var s = d.createElement('script');
+        s.src = '//Fr4nk404.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', + new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+    $('.disqus_click_btn').css('display','none');
+});</script><script type="text/javascript" id="disqus-count-script">$(function() {
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', '//disqus.com/next/config.json', true);
+     xhr.timeout = 2500;
+     xhr.onreadystatechange = function () {
+       if (xhr.readyState === 4 && xhr.status === 200) {
+         $('.post-meta .post-comments-count').show();
+         var s = document.createElement('script');
+         s.id = 'dsq-count-scr';
+         s.src = 'https://Fr4nk404.disqus.com/count.js';
+         s.async = true;
+         (document.head || document.body).appendChild(s);
+       }
+     };
+     xhr.ontimeout = function () { xhr.abort(); };
+     xhr.send(null);
+   });
+</script></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://fr4nk404.github.io"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Daily/">Daily</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Interesting/">Interesting</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Security/">Security</a><span class="category-list-count">3</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/VulnExploit/" style="font-size: 15px;">VulnExploit</a> <a href="/tags/DailyUse/" style="font-size: 15px;">DailyUse</a> <a href="/tags/bb/" style="font-size: 15px;">bb</a> <a href="/tags/https/" style="font-size: 15px;">https</a> <a href="/tags/Pentest/" style="font-size: 15px;">Pentest</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/07/01/HexoTheme-Optimization/">HexoTheme Optimization</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/23/轰炸漏洞小结/">轰炸漏洞小结</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/20/CVE-2019-12136/">CVE-2019-12136</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/ss-NG-switchyOmega+Outline/">ss-NG+switchyOmega+Outline</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/19/https原理及部署/">部署https</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/21/HHB/">平头哥HHB</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-comment-o"> 最近评论</i></div><script type="text/javascript" src="//Fr4nk404.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://hexo.imagemlt.xyz/" title="Imagemlt" target="_blank">Imagemlt</a><ul></ul><a href="http://blog.0kami.cn/" title="wh1t3p1g" target="_blank">wh1t3p1g</a><ul></ul><a href="http://www.recorday.cn/" title="C0d3r1iu" target="_blank">C0d3r1iu</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">Fr4nk404.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" color="0,0,0" opacity="0.5" zindex="-2" count="50" src="//lib.baomitu.com/canvas-nest.js/2.0.4/canvas-nest.umd.js"></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>
