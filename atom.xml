@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://fr4nk404.github.io/"/>
-  <updated>2020-06-01T07:29:25.445Z</updated>
+  <updated>2019-12-03T02:20:37.474Z</updated>
   <id>https://fr4nk404.github.io/</id>
   
   <author>
@@ -15,29 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>Web指纹识别</title>
-    <link href="https://fr4nk404.github.io/2020/06/01/Web%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%AB/"/>
-    <id>https://fr4nk404.github.io/2020/06/01/Web%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%AB/</id>
-    <published>2020-06-01T05:33:42.000Z</published>
-    <updated>2020-06-01T07:29:25.445Z</updated>
-    
-    <content type="html"><![CDATA[<p>这几天在做一些指纹识别的工作，因为有实时性要求，考虑层面主要是源码识别，另一个方面则是流量识别。这里以Resin为例记录一下实验过程。</p><a id="more"></a><h3 id="0x01-指纹识别"><a href="#0x01-指纹识别" class="headerlink" title="0x01 指纹识别"></a>0x01 指纹识别</h3><h4 id="常见方式"><a href="#常见方式" class="headerlink" title="常见方式"></a>常见方式</h4><ol><li><p>特定文件<br>一些网站的特定图片/JS/CSS等静态文件，如favicon.ico、css、logo.ico、js等一般不会修改，通过爬虫对这些文件进行抓取，可比对md5值，如果和规则库中的md5一致，则说明是同一CMS。这种方式速度比较快，误报率相对低一些，但也不排除有些二次开发的CMS会修改这些文件。</p></li><li><p>正常页面或错误网页中包含的关键字<br>先访问首页或特定页面如robots.txt等，通过<strong>正则</strong>匹配某些关键字，如Powered by Discuz、dedecms等。此外，可以构造错误页面，根据报错信息来判断使用的CMS或者中间件信息，如tomcat的报错页面等。<br><img src="/2020/06/01/Web指纹识别/1.jpg" alt="Discuz"></p></li><li><p>请求头信息的关键字匹配<br>根据网站response返回头信息进行关键字匹配，如<a href="https://github.com/AliasIO/wappalyzer" target="_blank" rel="noopener">Wappalyzer</a>和<a href="https://github.com/urbanadventurer/WhatWeb" target="_blank" rel="noopener">whatweb</a>就是通过banner信息来快速识别指纹，之前fofa的web指纹库很多都是使用的这种方法，效率非常高，基本请求一次就可以，但搜集这些规则可能会耗时很长，而且这些banner信息有些容易被改掉。<br>根据response header一般有以下几种识别方式：</p><blockquote><p>（1）查看http响应报头的X-Powered-By字段来识别；<br>（2）根据Cookies来进行判断，如一些waf会在返回头中包含一些信息，如Safedog等；<br>（3）根据header中的Server信息来判断，如Mod_Security、nginx-wallarm等；<br>（4）根据www-authenticate进行判断，一些路由交换设备可能存在这个字段，如huawei、h3c等设备。<br><img src="/2020/06/01/Web指纹识别/2.jpg" alt="resin"></p></blockquote></li><li><p>URL包含的路径特征等<br>通过规则库去探测是否有相应目录，或者根据爬虫结果对链接url进行分析，文件中目录进行检测等等方式，通过url地址或者对robots.txt来判别是否使用了某CMS，比如wordpress默认存在wp-includes和wp-admin目录，织梦默认管理后台为dede目录，weblogic可能包含wlsconsole等URL关键特征。<br><img src="/2020/06/01/Web指纹识别/3.jpg" alt="Weblogic"></p></li></ol><h3 id="0x02-Resin"><a href="#0x02-Resin" class="headerlink" title="0x02 Resin"></a>0x02 Resin</h3><ol><li><p>要创建一个基于java:latest的resin镜像，首先要按照jdk的环境，之后便可创建resin镜像了。<br>下载一个基础镜像：<code>docker pull java:latest</code>，下载成功后<code>docker info</code>查看镜像信息。<br>将在官网下载的resin-4.0.64放在<code>Users/repo/cms/resin</code>目录下<br><a href="https://caucho.com/products/resin/download#download" target="_blank" rel="noopener">官网下载地址</a></p></li><li><p>编辑Dockerfile<br>在resin目录下创建、编辑Dockerfile内容，内容如下：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> Users/repo/cms/resin</span><br><span class="line">vim Dockerfile</span><br><span class="line"></span><br><span class="line"><span class="comment"># Dockerfile</span></span><br><span class="line">FROM java:latest</span><br><span class="line">ADD resin-4.0.64 /Users/repo/cms/resin/resin4</span><br><span class="line">EXPOSE 8080</span><br><span class="line">CMD [<span class="string">"/Users/repo/cms/resin/resin4/bin/resin.sh"</span>,<span class="string">"console"</span>]</span><br></pre></td></tr></table></figure></li><li><p>创建<code>build.sh</code>启动脚本<br>给构造的镜像起名为 resin4，内容如下。运行<code>build.sh</code>脚本，可通过<code>docker images</code>查看已创建的resin4镜像。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -t:镜像名称</span></span><br><span class="line"><span class="comment"># .是指定Dockerfile的位置在当前目录</span></span><br><span class="line">docker build -t resin4:latest .</span><br></pre></td></tr></table></figure></li><li><p>基于镜像启动容器<br>通过<code>docker ps</code>查看容器运行状况，启动后可正常访问</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name <span class="built_in">test</span> -d -p 18081:8080 resin4:latest</span><br></pre></td></tr></table></figure></li></ol><p><img src="/2020/06/01/Web指纹识别/4.jpg" alt="homepage"></p><ol start="5"><li>在resin中部署web项目<br>将web项目pro打包到/Users/repo/cms/resin目录，并将项目挂载到resin的虚拟目录中。<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name proCMS -d -p 18082:8080 -v /Users/repo/cms/resin/pro:/Users/repo/cms/resin/resin4/webapps/ROOT resin4:latest</span><br></pre></td></tr></table></figure></li></ol><p><img src="/2020/06/01/Web指纹识别/5.jpg" alt="CMS"></p><ol start="6"><li>Resin指纹识别<br>对于resin，分别抓包和审计源码，采集如resin图标、报文cgi/resin-admin等敏感目录访问报文，提取特征从而进行指纹识别。<br>举例：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Resin特定文件</span><br><span class="line">resin.ico</span><br><span class="line"># Resin请求头</span><br><span class="line">re.match(&apos;\/resin-admin&apos;, http.head)</span><br><span class="line"># Resin关键字</span><br><span class="line">re.match(&quot;Resin\/\d\..+\..+&quot;, http.head)&amp;&amp;re.match(&quot;Resin\/\d\..+\..+&quot;, http.content)</span><br><span class="line"># URL</span><br><span class="line">re.match(&quot;\/resin-admin&quot;, http.cgi)</span><br></pre></td></tr></table></figure></li></ol><h3 id="0x03-参考链接"><a href="#0x03-参考链接" class="headerlink" title="0x03 参考链接"></a>0x03 参考链接</h3><ul><li><a href="https://github.com/AliasIO/wappalyzer" target="_blank" rel="noopener">https://github.com/AliasIO/wappalyzer</a></li><li><a href="https://github.com/urbanadventurer/WhatWeb" target="_blank" rel="noopener">https://github.com/urbanadventurer/WhatWeb</a></li><li><a href="https://github.com/iniqua/plecost" target="_blank" rel="noopener">https://github.com/iniqua/plecost</a></li><li><a href="https://www.freebuf.com/articles/web/202560.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/web/202560.html</a></li></ul>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;这几天在做一些指纹识别的工作，因为有实时性要求，考虑层面主要是源码识别，另一个方面则是流量识别。这里以Resin为例记录一下实验过程。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="Security" scheme="https://fr4nk404.github.io/categories/Security/"/>
-    
-    
-      <category term="Web" scheme="https://fr4nk404.github.io/tags/Web/"/>
-    
-  </entry>
   
   <entry>
     <title>HexoTheme Optimization</title>
