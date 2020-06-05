@@ -1,0 +1,76 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>EduSRC漏洞挖掘小结 | Fr4nk404</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">EduSRC漏洞挖掘小结</h1><a id="logo" href="/.">Fr4nk404</a><p class="description">Fr4nk404's Bl0g</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/tags/"><i class="fa fa-tags"> 标签</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">EduSRC漏洞挖掘小结</h1><div class="post-meta">Dec 30, 2018<span> | </span><span class="category"><a href="/categories/Security/">Security</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" data-disqus-identifier="2018/12/30/EduSRC漏洞挖掘小结/" href="/2018/12/30/EduSRC漏洞挖掘小结/#disqus_thread"></a><div class="post-content"><p>最近这段时间在上课和考试的空档期，没什么事儿干，决定刷一波EduSRC的洞，时间是从21号开始到29号结束，短期冲刺刷到了上榜，接下来就来讲讲这段时间的小结。</p>
+<a id="more"></a>
+<p>看了看这几天挖洞的类型，主要集中在后台getshell/拖数据库、弱口令、暗链等，接下来就按照漏洞类型和思路继续写。</p>
+<h3 id="Google-Hacking"><a href="#Google-Hacking" class="headerlink" title="Google Hacking"></a>Google Hacking</h3><p>回顾这次刷洞的过程，总觉得要先提到信息收集。Google hacking对于刷洞，就像网络探测引擎对于版本漏洞的作用。在对特定类漏洞进行探测过程中，高效使用google会获得大量有效信息、漏洞入口，从而高效“捡洞”。<br>有时，注意区分学习、成长的具体目标，可以把事情做得更高效。有关google hacking，这里有一些相关链接，就不再继续重复写轮子了：</p>
+<blockquote>
+<p><a href="https://klionsec.github.io/2014/12/14/search-hacking/" target="_blank" rel="noopener">https://klionsec.github.io/2014/12/14/search-hacking/</a><br><a href="https://www.freebuf.com/articles/network/169601.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/network/169601.html</a><br><a href="https://www.blackhat.com/presentations/bh-europe-05/BH_EU_05-Long.pdf" target="_blank" rel="noopener">https://www.blackhat.com/presentations/bh-europe-05/BH_EU_05-Long.pdf</a></p>
+</blockquote>
+<h3 id="Getshell"><a href="#Getshell" class="headerlink" title="Getshell"></a>Getshell</h3><p>高校网站的一个特点是外包研发，因此熟悉网站同源的常用的研发系统版本和漏洞在获得权限上起到了很大的作用。在这次刷洞的过程中，比较明显的感受是高校网站版本&amp;漏洞防御更新不及时，通过探测应用版本、服务版本，可以获取到存在漏洞的系统信息，从而getshell获取服务器权限。这里推荐几个版本探测工具：</p>
+<blockquote>
+<p><a href="https://www.zoomeye.org/" target="_blank" rel="noopener">https://www.zoomeye.org/</a><br><a href="https://fofa.so/" target="_blank" rel="noopener">https://fofa.so/</a></p>
+</blockquote>
+<h3 id="弱口令"><a href="#弱口令" class="headerlink" title="弱口令"></a>弱口令</h3><p>为什么要挖弱口令？既然是刷洞，当然要<strong>针对群体特点</strong>。</p>
+<ol>
+<li>学生信息网上易获取；</li>
+<li>高校教育网站大多默认采用密码弱口令/同账号/部分身份信息的形式；</li>
+<li>学生学号规律易猜解，得到少量学号格式即可大量生成学生学号，如【入学年限+专业代码+班级编号+学生个人编号】；</li>
+<li>教育网站信息集中，进入管理系统即可提升有效信息量级，对学生指纹进行勾勒，撞库猜解其社交账号等。</li>
+</ol>
+<p>在这样的前提下，探测到的系统主要有教务系统/财务系统/教学平台等，信息涵盖了从姓名/学号/身份证号/手机号/学科成绩/银行卡号及缴费信息等。有时，根据一些提示或许可以更快发现可用目标。<br><img src="/2018/12/30/EduSRC漏洞挖掘小结/1.png" alt="弱口令提示"><br><img src="/2018/12/30/EduSRC漏洞挖掘小结/2.png" alt="某教务系统"></p>
+<p>这样看来，&lt;基础信息探测+默认规则&gt;即可导出批量学生数据。学生数据虽然价值不高，但还是应当重视和注意的。那么，按照这样的思路：如何利用系统内容关键字暴露口令，这是在弱口令类型刷洞过程中的必备素养。</p>
+<h3 id="暗链"><a href="#暗链" class="headerlink" title="暗链"></a>暗链</h3><p>暗链指看不见但却被搜索引擎计算权重的外链，也叫黑链。</p>
+<p>它已经成为当前SEO最喜欢做的一种方式：增加权重、提升排名、提高PR。 黑链的含义是：站点被黑客利用技术入侵，并且取得权限，经过代码的添加，实现隐藏的一个或者多个导出链接，这样的方式是为了不让站长以及管理员发现链接的存在。随着监管的打击力度加强，挂马数量越来越少，与此同时，黑色产业链逐渐转向了暗链攻击。攻击者通过隐形篡改技术在被攻击网站的网页植入暗链提高排名，这些暗链往往被非法链接到色情、诈骗、甚至反动信息。</p>
+<h4 id="暗链发现——UA作弊"><a href="#暗链发现——UA作弊" class="headerlink" title="暗链发现——UA作弊"></a>暗链发现——UA作弊</h4><p>有些暗链为防止被发现，通过UA作弊的方式，在正常访问时不会出现异常，当遇到搜索引擎爬虫的UA后，就可发现其植入的暗链了。下面是一些常见搜索引擎的爬虫UA。</p>
+<blockquote>
+<p><a href="https://www.imtqy.com/spider-ua-ip.html" target="_blank" rel="noopener">https://www.imtqy.com/spider-ua-ip.html</a><br><a href="http://www.webkaka.com/tutorial/zhanzhang/2017/061068/" target="_blank" rel="noopener">http://www.webkaka.com/tutorial/zhanzhang/2017/061068/</a></p>
+</blockquote>
+<h4 id="暗链指纹分类"><a href="#暗链指纹分类" class="headerlink" title="暗链指纹分类"></a>暗链指纹分类</h4><p>在暗链植入过程中，往往有一些明文特征。据我所知，一些暗链检测工具的检测方法也是通过对特征进行正则锁定目标，如六和彩/时时彩/博彩/澳门博彩/香港马会/赌博/彩票/百家乐/太阳城等等，都是暗链中词频较高的特征。<br>其中，在我整理和收集暗链的过程中，主要发现以下几类可以进行探索。<br>1、博彩赌球类<br>2、淫秽色情类<br>3、虚假医疗类<br>4、非法药物类<br>5、虚假购物广告类<br>6、虚假社交类<br>7、虚假交易类<br>8、其他类<br>根据上述分类，暗链所指向的网站主要有以下几种类型：网游私服、医疗、博彩、色情、股票内幕信息和网游外挂。这些网站在通过大量暗链增加权重后，会排在搜索结果的前列。当用户搜索某一特定关键词时，可能被欺骗至这些网站。</p>
+<h3 id="其他漏洞"><a href="#其他漏洞" class="headerlink" title="其他漏洞"></a>其他漏洞</h3><h4 id="目录遍历漏洞"><a href="#目录遍历漏洞" class="headerlink" title="目录遍历漏洞"></a>目录遍历漏洞</h4><p>目录遍历漏洞，可让攻击者访问受限制的目录，通过执行命令来提取目录信息，或者在Web服务器的根目录以外执行命令。</p>
+<h4 id="URL任意跳转"><a href="#URL任意跳转" class="headerlink" title="URL任意跳转"></a>URL任意跳转</h4><p>URL任意跳转漏洞也称重定向漏洞，本质上是利用Web应用中带有重定向功能的业务，将用户从一个网站重定向到另一个网站。URL重定向主要用来钓鱼，比如url跳转中最常见的跳转在登陆口/支付口，也就是一旦登陆将会跳转任意自己构造的网站，如果设置成自己的url则会造成钓鱼。</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>简单记录了下这几天刷Edu洞的探索，着眼点更多在了信息收集和版本探测，感触有一些。比如真得可以想到。或许有一天人类指纹通过数据进行存储时，行为习惯就是打开裸奔的钥匙。贴图，逃：）<br><img src="/2018/12/30/EduSRC漏洞挖掘小结/3.png" alt="10天速成刷洞"></p>
+</div><iframe src="/donate/?AliPayQR=img/alipay.jpg&amp;WeChatQR=img/wechat.jpg&amp;GitHub=https://github.com/fr4nk404&amp;BTCQR=img/btc.jpg&amp;BTCKEY=1DgCePEwFFHwJm9bmAiv1rpgtp8AqGw3aq&amp;PayPal=undefined" style="overflow-x:hidden; overflow-y:hidden; border:0xp none #fff; min-height:240px; width:100%;" frameborder="0" scrolling="no"></iframe><div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>fr4nk404</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="/2018/12/30/EduSRC漏洞挖掘小结/">https://fr4nk404.github.io/2018/12/30/EduSRC漏洞挖掘小结/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>Copyright © 2019 fr4nk404's Blog. Powered by Hexo. Theme by Cho.</li></ul></div><br><div class="tags"><a href="/tags/VulnExploit/">VulnExploit</a></div><div class="post-nav"><a class="pre" href="/2019/01/21/HHB/">平头哥HHB</a><a class="next" href="/2017/11/15/https原理及部署/">HTTPS可信证书</a></div><div id="disqus_thread"><div class="btn_click_load"><button class="disqus_click_btn">阅读评论（请确保 Disqus 可以正常加载）</button></div><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'https://fr4nk404.github.io/2018/12/30/EduSRC漏洞挖掘小结/';
+    this.page.identifier = '2018/12/30/EduSRC漏洞挖掘小结/';
+    this.page.title = 'EduSRC漏洞挖掘小结';
+  };</script><script type="text/javascript" id="disqus-lazy-load-script">$.ajax({
+url: 'https://disqus.com/next/config.json',
+timeout: 2500,
+type: 'GET',
+success: function(){
+  var d = document;
+  var s = d.createElement('script');
+  s.src = '//Fr4nk404.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', + new Date());
+  (d.head || d.body).appendChild(s);
+  $('.disqus_click_btn').css('display', 'none');
+},
+error: function() {
+  $('.disqus_click_btn').css('display', 'block');
+}
+});</script><script type="text/javascript" id="disqus-click-load">$('.btn_click_load').click(() => {  //click to load comments
+    (() => { // DON'T EDIT BELOW THIS LINE
+        var d = document;
+        var s = d.createElement('script');
+        s.src = '//Fr4nk404.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', + new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+    $('.disqus_click_btn').css('display','none');
+});</script><script type="text/javascript" id="disqus-count-script">$(function() {
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', '//disqus.com/next/config.json', true);
+     xhr.timeout = 2500;
+     xhr.onreadystatechange = function () {
+       if (xhr.readyState === 4 && xhr.status === 200) {
+         $('.post-meta .post-comments-count').show();
+         var s = document.createElement('script');
+         s.id = 'dsq-count-scr';
+         s.src = 'https://Fr4nk404.disqus.com/count.js';
+         s.async = true;
+         (document.head || document.body).appendChild(s);
+       }
+     };
+     xhr.ontimeout = function () { xhr.abort(); };
+     xhr.send(null);
+   });
+</script></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://fr4nk404.github.io"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Daily/">Daily</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Interesting/">Interesting</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Security/">Security</a><span class="category-list-count">5</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/VulnExploit/" style="font-size: 15px;">VulnExploit</a> <a href="/tags/bb/" style="font-size: 15px;">bb</a> <a href="/tags/DailyUse/" style="font-size: 15px;">DailyUse</a> <a href="/tags/Web/" style="font-size: 15px;">Web</a> <a href="/tags/https/" style="font-size: 15px;">https</a> <a href="/tags/Pentest/" style="font-size: 15px;">Pentest</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/06/01/Web指纹识别/">Web指纹识别</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/01/HexoTheme-Optimization/">HexoTheme Optimization</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/23/轰炸漏洞小结/">轰炸漏洞小结</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/20/CVE-2019-12136/">CVE-2019-12136</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/ss-NG-switchyOmega+Outline/">Shadowsocks+SwitchyOmega+Outline</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/21/HHB/">平头哥HHB</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/30/EduSRC漏洞挖掘小结/">EduSRC漏洞挖掘小结</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/15/https原理及部署/">HTTPS可信证书</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-comment-o"> 最近评论</i></div><script type="text/javascript" src="//Fr4nk404.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://hexo.imagemlt.xyz/" title="Imagemlt" target="_blank">Imagemlt</a><ul></ul><a href="http://blog.0kami.cn/" title="wh1t3p1g" target="_blank">wh1t3p1g</a><ul></ul><a href="http://www.recorday.cn/" title="C0d3r1iu" target="_blank">C0d3r1iu</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2020 <a href="/." rel="nofollow">Fr4nk404.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" color="0,0,0" opacity="0.5" zindex="-2" count="50" src="//lib.baomitu.com/canvas-nest.js/2.0.4/canvas-nest.umd.js"></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>
